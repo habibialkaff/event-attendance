@@ -1,0 +1,445 @@
+$baseline-grid:            8px !default;
+$layout-gutter-width:      ($baseline-grid * 2) !default;
+
+$layout-breakpoint-sm:     600px !default;
+$layout-breakpoint-md:     960px !default;
+$layout-breakpoint-lg:     1200px !default;
+
+@-moz-document url-prefix() {
+  [data-layout-fill] {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    height: 100%;
+  }
+}
+
+@mixin flex-order-for-name($sizes:null) {
+  $flexOrderName: 'data-flex-order';
+  @if $sizes == null {
+    $sizes: '';
+
+    [#{$flexOrderName}] {
+      order: 0;
+    }
+  }
+
+  @for $i from 0 through 19 {
+    $order: '';
+    $suffix: '';
+
+    @each $s in $sizes {
+      @if $s != '' {
+        $suffix: '#{$s}-#{$i}';
+      } @else {
+        $suffix: '#{$i}';
+      }
+    }
+    @each $s in $sizes {
+      @if ($s != '') {
+        $order: $order + '[#{$flexOrderName}-#{$s}="#{$i}"], ';
+      } @else {
+        $order: $order + '[#{$flexOrderName}="#{$i}"], ';
+      }
+    }
+
+    #{$order} {
+      order: #{$i};
+    }
+  }
+}
+
+@mixin offset-for-name($sizes:null) {
+  $offsetName: 'data-offset';
+
+  @if $sizes == null {
+    $sizes: '';
+  }
+
+  @for $i from 0 through 19 {
+    $offsets: '';
+    $suffix: '';
+
+    @each $s in $sizes {
+      @if $s != '' {
+        $suffix: '#{$s}-#{$i * 5}';
+      } @else {
+        $suffix: '#{$i * 5}';
+      }
+    }
+    @each $s in $sizes {
+      @if ($s != '') {
+        $offsets: $offsets + '[#{$offsetName}-#{$s}="#{$i * 5}"], ';
+      } @else {
+        $offsets: $offsets + '[#{$offsetName}="#{$i * 5}"], ';
+      }
+    }
+
+    #{$offsets} {
+      margin-left: #{$i * 5 + '%'};
+    }
+  }
+
+  $offsets: '';
+  @each $i in 33, 34 {
+    $suffix: '';
+
+    @each $s in $sizes {
+      @if $s != '' {
+        $suffix: '#{$s}-#{$i}';
+      } @else {
+        $suffix: '#{$i}';
+      }
+    }
+
+    // add attribute selectors
+    @each $s in $sizes {
+      @if ($s != '') {
+        $offsets: $offsets + '[#{$offsetName}-#{$s}="#{$i}"], ';
+      } @else {
+        $offsets: $offsets + '[#{$offsetName}="#{$i}"], ';
+      }
+    }
+  }
+
+  #{$offsets} {
+    margin-left: 33%;
+  }
+
+  $offsets: '';
+  @each $i in 66, 67 {
+    $suffix: '';
+
+    @each $s in $sizes {
+      @if $s != '' {
+        $suffix: '#{$s}-#{$i}';
+      } @else {
+        $suffix: '#{$i}';
+      }
+    }
+
+    // add attribute selectors
+    @each $s in $sizes {
+      @if ($s != '') {
+        $offsets: $offsets + '[#{$offsetName}-#{$s}="#{$i}"], ';
+      } @else {
+        $offsets: $offsets + '[#{$offsetName}="#{$i}"], ';
+      }
+    }
+  }
+
+  #{$offsets} {
+    margin-left: 67%;
+  }
+
+}
+
+@mixin layout-for-name($name: null) {
+  @if $name == null {
+    $name: '';
+  } @else {
+    $name: '-#{$name}';
+  }
+
+  [data-layout#{$name}] {
+    box-sizing: border-box;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  [data-layout#{$name}=column] {
+    flex-direction: column;
+  }
+  [data-layout#{$name}=row] {
+    flex-direction: row;
+    flex-wrap: wrap; // auto-wrap
+  }
+}
+
+@mixin flex-properties-for-name($name: null) {
+  $flexName: 'data-flex';
+  @if $name != null {
+    $flexName: 'data-flex-#{$name}';
+    $name: '-#{$name}';
+  } @else {
+    $name: '';
+  }
+
+  [#{$flexName}] {
+    box-sizing: border-box;
+  }
+
+  [#{$flexName}] {
+    flex: 1 1 0%;
+  }
+
+  [#{$flexName}="initial"] {
+    flex: 0 1 auto;
+  }
+
+  [#{$flexName}="auto"] {
+    flex: 1 1 auto;
+  }
+
+  [#{$flexName}="none"] {
+    flex: 0 0 auto;
+  }
+
+  // (1-20) * 5 = 0-100%
+  @for $i from 1 through 20 {
+    [#{$flexName}="#{$i * 5}"] {
+      flex: 0 0 #{$i * 5 + '%'};
+    }
+
+    [data-layout#{$name}= "row" ] > [#{$flexName}= "#{$i * 5}" ] {
+      max-width: #{$i * 5 + '%'};
+      max-height: 100%;
+    }
+
+    [data-layout#{$name}= "column" ] > [#{$flexName}= "#{$i * 5}" ] {
+      max-width: 100%;
+      max-height: #{$i * 5 + '%'};
+    }
+  }
+
+  [data-layout#{$name}="row"] {
+    > [#{$flexName}="33"], > [#{$flexName}="34"] {
+      max-width: 33%;
+      max-height: 100%;
+    }
+    > [#{$flexName}="66"], > [#{$flexName}="67"] {
+      max-width: 67%;
+      max-height: 100%;
+    }
+  }
+
+  [data-layout#{$name}="column"] {
+    > [#{$flexName}="33"], > [#{$flexName}="34"], {
+      max-width: 100%;
+      max-height: 33%;
+    }
+    > [#{$flexName}="66"], > [#{$flexName}="67"], {
+      max-width: 100%;
+      max-height: 67%;
+    }
+  }
+}
+
+@mixin layout-align-for-name($suffix: null) {
+
+  // Alignment attributes for layout containers' children
+  // Arrange on the Main Axis
+  // center, start, end, space-between, space-around
+  // flex-start is the default for justify-content
+  // ------------------------------
+
+  $name: 'data-layout-align';
+  @if $suffix != null {
+    $name: 'data-layout-align-#{$suffix}';
+  }
+
+  // Main Axis Center
+  [#{$name}="center"],
+  [#{$name}="center center"],
+  [#{$name}="center start"],
+  [#{$name}="center end"] {
+    justify-content: center;
+  }
+
+  // Main Axis End
+  [#{$name}="end"], //stretch
+  [#{$name}="end center"],
+  [#{$name}="end start"],
+  [#{$name}="end end"] {
+    justify-content: flex-end;
+  }
+
+  // Main Axis Space Around
+  [#{$name}="space-around"], //stretch
+  [#{$name}="space-around center"],
+  [#{$name}="space-around start"],
+  [#{$name}="space-around end"] {
+    justify-content: space-around;
+  }
+
+  // Main Axis Space Between
+  [#{$name}="space-between"], //stretch
+  [#{$name}="space-between center"],
+  [#{$name}="space-between start"],
+  [#{$name}="space-between end"] {
+    justify-content: space-between;
+  }
+
+  // Arrange on the Cross Axis
+  // center, start, end
+  // stretch is the default for align-items
+  // ------------------------------
+
+  // Cross Axis Start
+  [#{$name}="center start"],
+  [#{$name}="start start"],
+  [#{$name}="end start"],
+  [#{$name}="space-between start"],
+  [#{$name}="space-around start"] {
+    align-items: flex-start;
+  }
+
+  // Cross Axis Center
+  [#{$name}="center center"],
+  [#{$name}="start center"],
+  [#{$name}="end center"],
+  [#{$name}="space-between center"],
+  [#{$name}="space-around center"] {
+    align-items: center;
+    max-width: 100%;
+
+  }
+
+  // Cross Axis End
+  [#{$name}="center end"],
+  [#{$name}="start end"],
+  [#{$name}="end end"],
+  [#{$name}="space-between end"],
+  [#{$name}="space-around end"] {
+    align-items: flex-end;
+  }
+}
+
+@mixin layout-padding-margin() {
+
+  [data-layout-padding] > [flex-sm], [data-layout-padding] > [flex-lt-md] {
+    padding: $layout-gutter-width / 4;
+  }
+  [data-layout-padding],
+  [data-layout-padding] > [flex],
+  [data-layout-padding] > [flex-gt-sm],
+  [data-layout-padding] > [flex-md],
+  [data-layout-padding] > [flex-lt-lg] {
+    padding: $layout-gutter-width / 2;
+  }
+  [data-layout-padding] > [flex-gt-md],
+  [data-layout-padding] > [flex-lg] {
+    padding: $layout-gutter-width / 1;
+  }
+
+  [data-layout-margin] > [flex-sm],
+  [data-layout-margin] > [flex-lt-md] {
+    margin: $layout-gutter-width / 4;
+  }
+
+  [data-layout-margin],
+  [data-layout-margin] > [flex],
+  [data-layout-margin] > [flex-gt-sm],
+  [data-layout-margin] > [flex-md],
+  [data-layout-margin] > [flex-lt-lg] {
+    margin: $layout-gutter-width / 2;
+  }
+
+  [data-layout-margin] > [flex-gt-md],
+  [data-layout-margin] > [flex-lg] {
+    margin: $layout-gutter-width / 1;
+  }
+
+  [data-layout-wrap] {
+    flex-wrap: wrap;
+  }
+
+  [data-layout-nowrap] {
+    flex-wrap: nowrap;
+  }
+
+  [data-layout-fill] {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    height: 100%;
+  }
+}
+
+@mixin layouts_for_breakpoint($name:null) {
+  @include flex-order-for-name($name);
+  @include offset-for-name($name);
+  @include layout-align-for-name($name);
+
+  @include layout-for-name($name);
+  @include flex-properties-for-name($name);
+}
+
+/*
+ *  Apply Mixins to create Layout/Flexbox styles
+ *
+ */
+
+@include layouts_for_breakpoint();
+@include layout-padding-margin();
+
+/**
+ * `hide-gt-sm show-gt-lg` should hide from 600px to 1200px
+ * `show-md hide-gt-sm` should show from 0px to 960px and hide at >960px
+ * `hide-gt-md show-gt-sm` should show everywhere (show overrides hide)`
+ *
+ *  hide means hide everywhere
+ *  Sizes:
+ *         0    <= size < 600  Phone
+ *         600  <= size < 960  Tablet
+ *         960  <= size < 1200 Tablet-Landscape
+ */
+
+@media (max-width: $layout-breakpoint-sm - 1) {
+  // SMALL SCREEN
+  [data-hide-sm], [data-hide] {
+    &:not([data-show-sm]):not([data-show]) {
+      display: none;
+    }
+  }
+  @include layouts_for_breakpoint(sm);
+}
+
+@media (min-width: $layout-breakpoint-sm) {
+  // BIGGER THAN SMALL SCREEN
+  @include layouts_for_breakpoint(gt-sm);
+
+}
+
+@media (min-width: $layout-breakpoint-sm) and (max-width: $layout-breakpoint-md - 1) {
+  // MEDIUM SCREEN
+  [data-hide], [data-hide-gt-sm] {
+    &:not([data-show-gt-sm]):not([data-show-md]):not([data-show]) {
+      display: none;
+    }
+  }
+  [data-hide-md]:not([data-show-md]):not([data-show]) {
+    display: none;
+  }
+  @include layouts_for_breakpoint(md);
+}
+
+@media (min-width: $layout-breakpoint-md) {
+  // BIGGER THAN MEDIUM SCREEN
+  @include layouts_for_breakpoint(gt-md);
+}
+
+@media (min-width: $layout-breakpoint-md) and (max-width: $layout-breakpoint-lg - 1) {
+  // LARGE SCREEN
+  [data-hide], [data-hide-gt-sm], [data-hide-gt-md] {
+    &:not([data-show-gt-sm]):not([data-show-gt-md]):not([data-show-lg]):not([data-show]) {
+      display: none;
+    }
+  }
+  [data-hide-lg]:not([data-show-lg]):not([data-show]) {
+    display: none;
+  }
+  @include layouts_for_breakpoint(lg);
+}
+
+@media (min-width: $layout-breakpoint-lg) {
+  // BIGGER THAN LARGE SCREEN
+  [data-hide-gt-sm], [data-hide-gt-md], [data-hide-gt-lg], [data-hide] {
+    &:not([data-show-gt-sm]):not([data-show-gt-md]):not([data-show-gt-lg]):not([data-show]) {
+      display: none;
+    }
+  }
+  @include layouts_for_breakpoint(gt-lg);
+}
