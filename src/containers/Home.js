@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import * as _ from 'lodash';
-import {RaisedButton, FlatButton, TextField, Dialog, Toggle} from 'material-ui';
+import {RaisedButton, TextField, Dialog} from 'material-ui';
 
 import Attendance from '../components/Attendance';
 
@@ -93,6 +93,12 @@ class Home extends Component {
         this.refs.editPhoneInput.setValue(phoneValue);
     }
 
+    onSearchEnter() {
+        if (this.state.filteredMembers.length === 1) {
+            this.setAttendance(this.state.filteredMembers[0].uid, true);
+        }
+    }
+
     saveMember() {
         let member = {
             name: this.refs.editNameInput.getValue(),
@@ -100,7 +106,6 @@ class Home extends Component {
         };
 
         let uid = this.state.selectedMember ? this.state.selectedMember.uid : null
-        console.log(uid);
 
         this.props.dispatch(updateMember(member, uid));
 
@@ -164,25 +169,20 @@ class Home extends Component {
             }
         }
         else {
-            let searchResult = null;
-
-            if (this.state.filteredMembers.length > 0) {
-                searchResult =
+            let searchResult =
+                <div>
+                    <div data-layout-margin>
+                        <RaisedButton label="Add NEW" primary={true} onClick={this.editMember.bind(this, null)}
+                                      fullWidth={true} labelStyle={{'fontSize': '1.2em'}}/>
+                    </div>
                     <div>
                         {this.state.filteredMembers.map((member, i) => {
                             return (<Attendance key={i} member={member}
-                                                isAttended={this.props.attendances && this.props.attendances[member.uid]}
+                                                isAttended={this.props.attendances[member.uid] ? true : false}
                                                 setAttendance={this.setAttendance} editMember={this.editMember}/>);
                         })}
-                    </div>;
-            }
-            else {
-                searchResult =
-                    <div>
-                        <RaisedButton label="Add" primary={true} onClick={this.editMember.bind(this, null)}
-                                      fullWidth={true} labelStyle={{'fontSize': '1.5em'}}/>
-                    </div>;
-            }
+                    </div>
+                </div>;
 
             content =
                 <div>
@@ -192,7 +192,7 @@ class Home extends Component {
 
                     <div>
                         <TextField ref="searchInput" hintText="" floatingLabelText="Search User" fullWidth={true}
-                                   onChange={this.updateSearchResult}/>
+                                   onChange={this.updateSearchResult} onEnterKeyDown={this.onSearchEnter}/>
                     </div>
                     {searchResult}
                 </div>;

@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {FlatButton, Toggle} from 'material-ui';
+import {FlatButton, Toggle, Checkbox} from 'material-ui';
 
 
 class Attendance extends Component {
@@ -15,7 +15,7 @@ class Attendance extends Component {
     }
 
     setAttendance() {
-        this.props.setAttendance(this.props.member.uid, this.refs.toggle.isToggled());
+        this.props.setAttendance(this.props.member.uid, this.refs.toggle.isChecked());
     }
 
     render() {
@@ -39,9 +39,8 @@ class Attendance extends Component {
                     </div>
                 </div>
                 <div data-flex="20" data-layout="column" data-layout-align="center center">
-                    <div >
-                        <Toggle ref="toggle" defaultToggled={this.props.isAttended}
-                                onToggle={this.setAttendance}/>
+                    <div>
+                        <Checkbox ref="toggle" defaultChecked={this.props.isAttended} onCheck={this.setAttendance}/>
                     </div>
                 </div>
             </div>

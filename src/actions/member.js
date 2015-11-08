@@ -65,6 +65,7 @@ function loadMembers() {
 
 function updateMember(member, uid) {
     function updateSuccess(memberUid) {
+        member.uid = memberUid;
         return {
             type: UPDATEMEMBER_SUCCESS,
             memberUid: memberUid
