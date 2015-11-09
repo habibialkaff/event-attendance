@@ -11,31 +11,31 @@ class Login extends Component {
         this.handleAdminLogin = this.handleAdminLogin.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.user) {
-            this.context.history.pushState(null, '/');
-        }
-    }
-
-    handleLogin(event) {
+    handleLogin = (event) => {
         event.preventDefault();
         let username = this.refs.username;
         let password = this.refs.password;
         this.props.dispatch(login(username.getValue(), password.getValue()));
-    }
+    };
 
-    handleAdminLogin(event) {
+    handleAdminLogin = (event) => {
         event.preventDefault();
         this.props.dispatch(ssoLogin());
-    }
+    };
 
+    componentWillReceiveProps = (nextProps) => {
+        if (nextProps.user) {
+            this.context.history.pushState(null, '/');
+        }
+    };
 
     render() {
         return (
-            <div data-layout-fill data-layout="column" >
+            <div data-layout-fill data-layout="column">
                 <div data-flex="70" data-layout="column" data-layout-align="center center">
-                    <TextField ref="username" hintText="Username" floatingLabelText="Username" />
-                    <TextField ref="password" hintText="Password" floatingLabelText="Password" type="password" />
+                    <TextField ref="username" hintText="Username" floatingLabelText="Username"/>
+                    <TextField ref="password" hintText="Password" floatingLabelText="Password" type="password"/>
+
                     <div>
                         <RaisedButton label="LOGIN" primary={true} onClick={this.handleLogin}/>
                     </div>

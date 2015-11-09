@@ -8,16 +8,14 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.props.dispatch(checkAuth());
-
-        this.handleLogout = this.handleLogout.bind(this);
     }
 
-    handleLogout(e) {
+    handleLogout = (e) => {
         e.preventDefault();
 
         this.props.dispatch(logout());
         this.context.history.pushState(null, '/login');
-    }
+    };
 
     render() {
         return (

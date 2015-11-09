@@ -7,28 +7,24 @@ import {TextField, RaisedButton, List, ListItem, Toggle} from 'material-ui';
 class Admin extends Component {
     constructor(props) {
         super(props);
-        this.editEvent = this.editEvent.bind(this);
-        this.saveEvent = this.saveEvent.bind(this);
-        this.cancelSaveEvent = this.cancelSaveEvent.bind(this);
-        this.toggleEvent = this.toggleEvent.bind(this);
 
         this.state = {
             isEditEvent: false
         }
     }
 
-    editEvent() {
+    editEvent = () => {
         this.setState({
             isEditEvent: true
         })
-    }
+    };
 
-    saveEvent(e) {
+    saveEvent = (e) => {
         e.preventDefault();
 
         let name = this.refs.eventName.getValue();
 
-        if(name) {
+        if (name) {
             const event = {
                 name: name,
                 description: null,
@@ -43,9 +39,9 @@ class Admin extends Component {
         });
 
         this.refs.eventName.setValue('');
-    }
+    };
 
-    cancelSaveEvent(e) {
+    cancelSaveEvent = (e) => {
         e.preventDefault();
 
         this.setState({
@@ -53,16 +49,16 @@ class Admin extends Component {
         });
 
         this.refs.eventName.setValue('');
-    }
+    };
 
-    toggleEvent(key, e) {
+    toggleEvent = (key, e) => {
         e.preventDefault();
 
         let event = this.props.events[key];
 
         event.isClosed = !event.isClosed;
         this.props.dispatch(update(event, key));
-    }
+    };
 
     componentWillMount() {
         this.props.dispatch(attachCallbackEvents());
@@ -77,20 +73,20 @@ class Admin extends Component {
 
         if (this.state.isEditEvent) {
             eventEdit = <div data-layout="column" data-layout-align="center center">
-                            <div className="edit-event">
-                                <TextField ref="eventName" hintText="Event Name" floatingLabelText="Event Name"/>
+                <div className="edit-event">
+                    <TextField ref="eventName" hintText="Event Name" floatingLabelText="Event Name"/>
 
-                                <div data-layout="row" data-layout-align="space-between center">
-                                    <RaisedButton label="SAVE EVENT" primary={true} onClick={this.saveEvent}/>
-                                    <RaisedButton label="CANCEL" secondary={true} onClick={this.cancelSaveEvent}/>
-                                </div>
-                            </div>
-                        </div>;
+                    <div data-layout="row" data-layout-align="space-between center">
+                        <RaisedButton label="SAVE EVENT" primary={true} onClick={this.saveEvent}/>
+                        <RaisedButton label="CANCEL" secondary={true} onClick={this.cancelSaveEvent}/>
+                    </div>
+                </div>
+            </div>;
         }
         else {
             eventEdit = <div data-layout="column" data-layout-align="center center" data-layout-margin>
-                            <RaisedButton label="ADD EVENT" primary={true} onClick={this.editEvent}/>
-                        </div>;
+                <RaisedButton label="ADD EVENT" primary={true} onClick={this.editEvent}/>
+            </div>;
         }
 
         let listItemStyle = {
@@ -99,20 +95,21 @@ class Admin extends Component {
 
         return (
             <div>
-                {eventEdit}                                
+                {eventEdit}
                 <div>
                     <List>
                         {
-                            Object.keys(this.props.events).map((key, i) => {                                
+                            Object.keys(this.props.events).map((key, i) => {
                                 if (!this.props.events[key].isClosed) {
                                     let selectedEvent = this.props.events[key];
                                     let rightToggle =
-                                        <Toggle defaultToggled={!this.props.events[key].isClosed} 
+                                        <Toggle defaultToggled={!this.props.events[key].isClosed}
                                                 onToggle={this.toggleEvent.bind(this, key)}/>;
 
-                                    return <ListItem key={i} primaryText={<div style={listItemStyle}>{this.props.events[key].name}</div>}
-                                                     rightToggle={rightToggle} 
-                                                    secondaryText={
+                                    return <ListItem key={i}
+                                                     primaryText={<div style={listItemStyle}>{this.props.events[key].name}</div>}
+                                                     rightToggle={rightToggle}
+                                                     secondaryText={
                                                         <p>
                                                             <span>
                                                                 Username: {selectedEvent.admin.email}

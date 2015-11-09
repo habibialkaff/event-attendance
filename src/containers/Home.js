@@ -12,15 +12,7 @@ import {loadMembers, updateMember} from '../actions/member';
 class Home extends Component {
     constructor(props) {
         super(props);
-
-        this.selectEvent = this.selectEvent.bind(this);
-        this.editMember = this.editMember.bind(this);
-        this.cancelEditMember = this.cancelEditMember.bind(this);
-        this.saveMember = this.saveMember.bind(this);
-        this.setAttendance = this.setAttendance.bind(this);
-        this.onSearchEnter = this.onSearchEnter.bind(this);
-        this.updateSearchResult = _.debounce(this.updateSearchResult.bind(this), 200);
-
+        this.updateSearchResult = _.debounce(this.updateSearchResult.bind(this), 500);
 
         this.memberKeys = null;
 
@@ -30,73 +22,6 @@ class Home extends Component {
             selectedMember: null,
             searchInputValue: '',
             showEditMember: false
-        }
-    }
-
-    componentDidMount() {
-        this.props.dispatch(loadOpenEvents(this.props.eventUid));
-        this.props.dispatch(loadMembers());
-    }
-
-    componentWillUnmount() {
-        if (this.state.selectedEventUid) {
-            this.props.dispatch(detachEventAttendance(this.state.selectedEventUid));
-        }
-    }
-
-    componentWillUpdate() {
-        if (!this.state.selectedEvent) {
-            let keys = Object.keys(this.props.events);
-
-            if (keys.length === 1) {
-                this.selectEvent(keys[0]);
-            }
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.updatedMemberUid !== prevProps.updatedMemberUid) {
-            this.props.dispatch(updateAttendance(this.props.updatedMemberUid, this.state.selectedEventUid, true))
-        }
-    }
-
-    selectEvent(key) {
-        this.setState({
-            selectedEvent: this.props.events[key],
-            selectedEventUid: key
-        });
-
-        this.props.dispatch(attachEventAttendance(key))
-    }
-
-    editMember(member) {
-        this.setState({
-            selectedMember: member,
-            showEditMember: true
-        });
-    }
-
-    cancelEditMember() {
-        this.setState({
-            showEditMember: false
-        })
-    }
-
-    saveMember(member, uid) {
-        this.props.dispatch(updateMember(member, uid));
-
-        this.setState({
-            showEditMember: false
-        })
-    }
-
-    setAttendance(memberUid, isAttended) {
-        this.props.dispatch(updateAttendance(memberUid, this.state.selectedEventUid, isAttended))
-    }
-
-    onSearchEnter() {
-        if (this.state.filteredMembers.length === 1) {
-            this.setAttendance(this.state.filteredMembers[0].uid, true);
         }
     }
 
@@ -129,6 +54,73 @@ class Home extends Component {
             filteredMembers: arr,
             searchInputValue: inputValue
         })
+    };
+
+    selectEvent = (key) => {
+        this.setState({
+            selectedEvent: this.props.events[key],
+            selectedEventUid: key
+        });
+
+        this.props.dispatch(attachEventAttendance(key))
+    };
+
+    editMember = (member) => {
+        this.setState({
+            selectedMember: member,
+            showEditMember: true
+        });
+    };
+
+    cancelEditMember = () => {
+        this.setState({
+            showEditMember: false
+        })
+    };
+
+    saveMember = (member, uid) => {
+        this.props.dispatch(updateMember(member, uid));
+
+        this.setState({
+            showEditMember: false
+        })
+    };
+
+    setAttendance = (memberUid, isAttended) => {
+        this.props.dispatch(updateAttendance(memberUid, this.state.selectedEventUid, isAttended))
+    };
+
+    onSearchEnter = () => {
+        if (this.state.filteredMembers.length === 1) {
+            this.setAttendance(this.state.filteredMembers[0].uid, true);
+        }
+    };
+
+    componentDidMount() {
+        this.props.dispatch(loadOpenEvents(this.props.eventUid));
+        this.props.dispatch(loadMembers());
+    }
+
+    componentWillUnmount() {
+        if (this.state.selectedEventUid) {
+            this.props.dispatch(detachEventAttendance(this.state.selectedEventUid));
+        }
+    }
+
+    componentWillUpdate() {
+        if (!this.state.selectedEvent) {
+            let keys = Object.keys(this.props.events);
+
+            if (keys.length === 1) {
+                this.selectEvent(keys[0]);
+            }
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.updatedMemberUid !== prevProps.updatedMemberUid) {
+            this.props.dispatch(updateAttendance(this.props.updatedMemberUid, this.state.selectedEventUid, true))
+        }
     }
 
     render() {
