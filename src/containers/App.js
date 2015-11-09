@@ -4,10 +4,18 @@ import Header from '../components/Header';
 
 import {checkAuth, logout} from '../actions/auth';
 
+import ThemeManager from 'material-ui/lib/styles/theme-manager';
+import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
+import Colors from 'material-ui/lib/styles/colors';
+
 class App extends Component {
     constructor(props) {
         super(props);
         this.props.dispatch(checkAuth());
+
+        this.state = {
+            muiTheme: ThemeManager.getMuiTheme(LightRawTheme)
+        }
     }
 
     handleLogout = (e) => {
@@ -16,6 +24,20 @@ class App extends Component {
         this.props.dispatch(logout());
         this.context.history.pushState(null, '/login');
     };
+
+    getChildContext() {
+        return {
+            muiTheme: this.state.muiTheme
+        };
+    }
+
+    componentWillMount() {
+        let newMuiTheme = ThemeManager.modifyRawThemePalette(this.state.muiTheme, {
+            accent1Color: Colors.purple300
+        });
+
+        this.setState({muiTheme: newMuiTheme});
+    }
 
     render() {
         return (
@@ -34,6 +56,10 @@ class App extends Component {
 App.contextTypes = {
     history: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
+};
+
+App.childContextTypes = {
+    muiTheme: React.PropTypes.object
 };
 
 function mapStateProps(state) {
