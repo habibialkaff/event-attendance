@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {FlatButton, Toggle} from 'material-ui';
+import {Dialog, TextField} from 'material-ui';
 
 class EditMember extends Component {
     constructor(props) {
@@ -7,9 +7,10 @@ class EditMember extends Component {
 
         this.onDialogShown = this.onDialogShown.bind(this);
         this.saveMember = this.saveMember.bind(this);
+        this.cancel = this.cancel.bind(this);
 
         this.standardActions = [
-            {text: 'Cancel'},
+            {text: 'Cancel', onTouchTap: this.cancel},
             {text: 'Save', ref: 'submit', onTouchTap: this.saveMember}
         ];
     }
@@ -36,14 +37,18 @@ class EditMember extends Component {
             phone: this.refs.editPhoneInput.getValue()
         };
 
-        let uid = this.state.selectedMember ? this.state.selectedMember.uid : null;
+        let uid = this.props.selectedMember ? this.props.selectedMember.uid : null;
 
         this.props.saveMember(member, uid);
     }
 
+    cancel() {
+        this.props.onCancel();
+    }
+
     componentDidUpdate(prevProps) {
-        if (prevProps.showDialog !== this.props.showDialog) {
-            if (this.props.showDialog) {
+        if (prevProps.showEditMember !== this.props.showEditMember) {
+            if (this.props.showEditMember) {
                 this.refs.dialog.show();
             }
             else {
@@ -53,7 +58,6 @@ class EditMember extends Component {
     }
 
     render() {
-
         return (
             <div>
                 <Dialog ref="dialog" actions={this.standardActions} actionFocus="submit" onShow={this.onDialogShown}
@@ -66,3 +70,5 @@ class EditMember extends Component {
         )
     }
 }
+
+export default EditMember;

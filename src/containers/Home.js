@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import * as _ from 'lodash';
-import {RaisedButton, TextField, Dialog} from 'material-ui';
+import {RaisedButton, TextField} from 'material-ui';
 
 import Attendance from '../components/Attendance';
+import EditMember from '../components/EditMember';
 
 import {connect} from 'react-redux';
 import {loadOpenEvents, updateAttendance, attachEventAttendance, detachEventAttendance} from '../actions/event';
@@ -14,9 +15,10 @@ class Home extends Component {
 
         this.selectEvent = this.selectEvent.bind(this);
         this.editMember = this.editMember.bind(this);
-        this.onDialogShown = this.onDialogShown.bind(this);
+        this.cancelEditMember = this.cancelEditMember.bind(this);
         this.saveMember = this.saveMember.bind(this);
         this.setAttendance = this.setAttendance.bind(this);
+        this.onSearchEnter = this.onSearchEnter.bind(this);
         this.updateSearchResult = _.debounce(this.updateSearchResult.bind(this), 200);
 
 
@@ -25,7 +27,9 @@ class Home extends Component {
         this.state = {
             selectedEvent: null,
             filteredMembers: [],
-            selectedMember: null
+            selectedMember: null,
+            searchInputValue: '',
+            showEditMember: false
         }
     }
 
@@ -56,10 +60,6 @@ class Home extends Component {
         }
     }
 
-    setAttendance(memberUid, isAttended) {
-        this.props.dispatch(updateAttendance(memberUid, this.state.selectedEventUid, isAttended))
-    }
-
     selectEvent(key) {
         this.setState({
             selectedEvent: this.props.events[key],
@@ -71,26 +71,27 @@ class Home extends Component {
 
     editMember(member) {
         this.setState({
-            selectedMember: member
+            selectedMember: member,
+            showEditMember: true
         });
-
-        this.refs.dialog.show();
     }
 
-    onDialogShown() {
-        let nameValue = '';
-        let phoneValue = '';
+    cancelEditMember() {
+        this.setState({
+            showEditMember: false
+        })
+    }
 
-        if (this.state.selectedMember) {
-            nameValue = this.state.selectedMember.name;
-            phoneValue = this.state.selectedMember.phone;
-        }
-        else {
-            nameValue = this.refs.searchInput.getValue();
-        }
+    saveMember(member, uid) {
+        this.props.dispatch(updateMember(member, uid));
 
-        this.refs.editNameInput.setValue(nameValue);
-        this.refs.editPhoneInput.setValue(phoneValue);
+        this.setState({
+            showEditMember: false
+        })
+    }
+
+    setAttendance(memberUid, isAttended) {
+        this.props.dispatch(updateAttendance(memberUid, this.state.selectedEventUid, isAttended))
     }
 
     onSearchEnter() {
@@ -99,21 +100,9 @@ class Home extends Component {
         }
     }
 
-    saveMember() {
-        let member = {
-            name: this.refs.editNameInput.getValue(),
-            phone: this.refs.editPhoneInput.getValue()
-        };
-
-        let uid = this.state.selectedMember ? this.state.selectedMember.uid : null
-
-        this.props.dispatch(updateMember(member, uid));
-
-        this.refs.dialog.dismiss();
-    }
-
     updateSearchResult(e) {
-        let val = e.target.value.toLowerCase();
+        let inputValue = e.target.value;
+        let val = inputValue.toLowerCase();
         let arr = [];
 
         if (!this.memberKeys) {
@@ -137,7 +126,8 @@ class Home extends Component {
         }
 
         this.setState({
-            filteredMembers: arr
+            filteredMembers: arr,
+            searchInputValue: inputValue
         })
     }
 
@@ -172,7 +162,7 @@ class Home extends Component {
             let searchResult =
                 <div>
                     <div data-layout-margin>
-                        <RaisedButton label="Add NEW" primary={true} onClick={this.editMember.bind(this, null)}
+                        <RaisedButton label="ADD NEW" primary={true} onClick={this.editMember.bind(this, null)}
                                       fullWidth={true} labelStyle={{'fontSize': '1.2em'}}/>
                     </div>
                     <div>
@@ -198,23 +188,15 @@ class Home extends Component {
                 </div>;
         }
 
-        let standardActions = [
-            {text: 'Cancel'},
-            {text: 'Save', ref: 'submit', onTouchTap: this.saveMember}
-        ];
-
-        let dialogContainer =
-            <Dialog ref="dialog" actions={standardActions} actionFocus="submit" onShow={this.onDialogShown}
-                    modal={true}>
-                <TextField ref="editNameInput" hintText="" floatingLabelText="Name" fullWidth={true}/>
-                <TextField ref="editPhoneInput" type="tel" hintText="" floatingLabelText="Phone Number"
-                           fullWidth={true}/>
-            </Dialog>;
+        const editMember =
+            <EditMember showEditMember={this.state.showEditMember} selectedMember={this.state.selectedMember}
+                        searchInputValue={this.state.searchInputValue} saveMember={this.saveMember}
+                        onCancel={this.cancelEditMember}/>;
 
         return (
             <div data-layout-margin>
                 {content}
-                {dialogContainer}
+                {editMember}
             </div>
         )
     }
