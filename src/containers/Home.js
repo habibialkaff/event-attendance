@@ -7,7 +7,7 @@ import EditMember from '../components/EditMember';
 
 import {connect} from 'react-redux';
 import {loadOpenEvents, updateAttendance, attachEventAttendance, detachEventAttendance} from '../actions/event';
-import {loadMembers, updateMember} from '../actions/member';
+import {attachLoadMembers, detachLoadMembers, updateMember} from '../actions/member';
 
 class Home extends Component {
     constructor(props) {
@@ -98,10 +98,12 @@ class Home extends Component {
 
     componentDidMount() {
         this.props.dispatch(loadOpenEvents(this.props.eventUid));
-        this.props.dispatch(loadMembers());
+        this.props.dispatch(attachLoadMembers());
     }
 
     componentWillUnmount() {
+        this.props.dispatch(detachLoadMembers());
+
         if (this.state.selectedEventUid) {
             this.props.dispatch(detachEventAttendance(this.state.selectedEventUid));
         }
@@ -120,6 +122,10 @@ class Home extends Component {
     componentDidUpdate(prevProps) {
         if (this.props.updatedMemberUid !== prevProps.updatedMemberUid) {
             this.props.dispatch(updateAttendance(this.props.updatedMemberUid, this.state.selectedEventUid, true))
+        }
+
+        if (this.props.members !== prevProps.members) {
+            this.memberKeys = Object.keys(this.props.members);
         }
     }
 

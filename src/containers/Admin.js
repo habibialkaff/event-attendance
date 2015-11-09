@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {attachCallbackEvents, detachCallbackEvents, update} from '../actions/event';
+import {attachLoadEvents, detachLoadEvents, update} from '../actions/event';
 
 import {TextField, RaisedButton, List, ListItem, Toggle} from 'material-ui';
 
@@ -61,11 +61,11 @@ class Admin extends Component {
     };
 
     componentWillMount() {
-        this.props.dispatch(attachCallbackEvents());
+        this.props.dispatch(attachLoadEvents());
     }
 
     componentWillUnmount() {
-        this.props.dispatch(detachCallbackEvents());
+        this.props.dispatch(detachLoadEvents());
     }
 
     render() {

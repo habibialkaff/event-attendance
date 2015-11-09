@@ -10,7 +10,7 @@ const baseRef = new Firebase(BASE_URL);
 const eventsRef = baseRef.child('events');
 const eventAdminsRef = baseRef.child('eventAdmins');
 
-function attachCallbackEvents() {
+function attachLoadEvents() {
     function loadSuccess(data) {
         return {
             type: RELOADEVENTS_SUCCESS,
@@ -27,7 +27,7 @@ function attachCallbackEvents() {
     }
 }
 
-function detachCallbackEvents() {
+function detachLoadEvents() {
     return (dispatch) => {
         eventsRef.off('value');
     }
@@ -163,6 +163,6 @@ function removeEventAdmin(admin) {
     return p;
 }
 
-export {attachCallbackEvents, detachCallbackEvents, loadOpenEvents,
+export {attachLoadEvents, detachLoadEvents, loadOpenEvents,
     update, updateAttendance, attachEventAttendance, detachEventAttendance}
 

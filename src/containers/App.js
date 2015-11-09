@@ -1,12 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import {Styles} from 'material-ui';
+
 import Header from '../components/Header';
 
 import {checkAuth, logout} from '../actions/auth';
-
-import ThemeManager from 'material-ui/lib/styles/theme-manager';
-import LightRawTheme from 'material-ui/lib/styles/raw-themes/light-raw-theme';
-import Colors from 'material-ui/lib/styles/colors';
 
 class App extends Component {
     constructor(props) {
@@ -14,7 +12,7 @@ class App extends Component {
         this.props.dispatch(checkAuth());
 
         this.state = {
-            muiTheme: ThemeManager.getMuiTheme(LightRawTheme)
+            muiTheme: Styles.ThemeManager.getMuiTheme(Styles.LightRawTheme)
         }
     }
 
@@ -32,8 +30,8 @@ class App extends Component {
     }
 
     componentWillMount() {
-        let newMuiTheme = ThemeManager.modifyRawThemePalette(this.state.muiTheme, {
-            accent1Color: Colors.purple300
+        let newMuiTheme = Styles.ThemeManager.modifyRawThemePalette(this.state.muiTheme, {
+            accent1Color: Styles.Colors.purple300
         });
 
         this.setState({muiTheme: newMuiTheme});

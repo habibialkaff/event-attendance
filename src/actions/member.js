@@ -1,42 +1,22 @@
 import Firebase from 'firebase';
 import {BASE_URL} from './constant';
 
-export const ATTACHMEMBER_SUCCESS = 'ATTACHMEMBER_SUCCESS';
 export const LOADMEMBER_SUCCESS = 'LOADMEMBER_SUCCESS';
 export const UPDATEMEMBER_SUCCESS = 'UPDATEMEMBER_SUCCESS';
 
 const baseRef = new Firebase(BASE_URL);
 const membersRef = baseRef.child('members');
 
-function attachCallbackMembers() {
-    function loadSuccess(data) {
-        return {
-            type: ATTACHMEMBER_SUCCESS,
-            members: data
-        };
-    }
-
-    return (dispatch) => {
-        membersRef.on('value', (snapshot) => {
-            dispatch(loadSuccess(snapshot.val()));
-        }, (error) => {
-            console.log(error);
-        })
-    }
-}
-
-function detachCallbackMembers() {
-    return (dispatch) => {
-        membersRef.off('value');
-    }
-}
-
-function loadMembers() {
+function attachLoadMembers() {
     function loadSuccess(data) {
         var members = {};
 
         for (let i in data) {
             if (data.hasOwnProperty(i)) {
+                if(data[i].name == '' && data[i].phone == ''){
+                    continue;
+                }
+
                 if (!members[data[i].name]) {
                     members[data[i].name] = [];
                 }
@@ -44,8 +24,7 @@ function loadMembers() {
                 members[data[i].name].push({
                     uid: i,
                     name: data[i].name,
-                    phone: data[i].phone,
-                    email: data[i].email
+                    phone: data[i].phone
                 });
             }
         }
@@ -57,9 +36,17 @@ function loadMembers() {
     }
 
     return (dispatch) => {
-        membersRef.once('value', (snapshot) => {
+        membersRef.on('value', (snapshot) => {
             dispatch(loadSuccess(snapshot.val()));
+        }, (error) => {
+            console.log(error);
         })
+    }
+}
+
+function detachLoadMembers() {
+    return (dispatch) => {
+        membersRef.off('value');
     }
 }
 
@@ -95,4 +82,4 @@ function updateMember(member, uid) {
     }
 }
 
-export {attachCallbackMembers, detachCallbackMembers, loadMembers, updateMember}
+export {attachLoadMembers, detachLoadMembers, updateMember}
