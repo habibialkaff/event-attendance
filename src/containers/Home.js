@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import * as _ from 'lodash';
-import {RaisedButton, TextField} from 'material-ui';
+import {RaisedButton, TextField, Dialog} from 'material-ui';
 
 import Attendance from '../components/Attendance';
 import EditMember from '../components/EditMember';
@@ -15,6 +15,7 @@ class Home extends Component {
         this.updateSearchResult = _.debounce(this.updateSearchResult.bind(this), 500);
 
         this.memberKeys = null;
+        this.memberUpdated = false;
 
         this.state = {
             selectedEvent: null,
@@ -22,7 +23,7 @@ class Home extends Component {
             selectedMember: null,
             searchInputValue: '',
             showEditMember: false
-        }
+        };
     }
 
     updateSearchResult(e) {
@@ -54,7 +55,9 @@ class Home extends Component {
             filteredMembers: arr,
             searchInputValue: inputValue
         })
-    };
+    }
+
+;
 
     selectEvent = (key) => {
         this.setState({
@@ -83,7 +86,9 @@ class Home extends Component {
 
         this.setState({
             showEditMember: false
-        })
+        });
+
+        this.memberUpdated = true;
     };
 
     setAttendance = (memberUid, isAttended) => {
@@ -121,7 +126,16 @@ class Home extends Component {
 
     componentDidUpdate(prevProps) {
         if (this.props.updatedMemberUid !== prevProps.updatedMemberUid) {
-            this.props.dispatch(updateAttendance(this.props.updatedMemberUid, this.state.selectedEventUid, true))
+            this.props.dispatch(updateAttendance(this.props.updatedMemberUid, this.state.selectedEventUid, true));
+        }
+
+        if(this.memberUpdated) {
+            this.refs.memberSavedDialog.show();
+            this.memberUpdated = false;
+
+            setTimeout(() => {
+                this.refs.memberSavedDialog.dismiss();
+            }, 2000);
         }
 
         if (this.props.members !== prevProps.members) {
@@ -195,6 +209,9 @@ class Home extends Component {
             <div data-layout-margin>
                 {content}
                 {editMember}
+                <Dialog ref="memberSavedDialog" actions={[{text: 'OK'}]} modal={true}>
+                    <span>Member is updated and set to Attended</span>
+                </Dialog>
             </div>
         )
     }

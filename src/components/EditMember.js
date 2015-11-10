@@ -62,9 +62,10 @@ class EditMember extends Component {
             <div>
                 <Dialog ref="dialog" actions={this.standardActions} actionFocus="submit" onShow={this.onDialogShown}
                         modal={true}>
-                    <TextField ref="editNameInput" hintText="" floatingLabelText="Name" fullWidth={true}/>
+                    <TextField ref="editNameInput" hintText="" floatingLabelText="Name" fullWidth={true}
+                               onEnterKeyDown={this.saveMember}/>
                     <TextField ref="editPhoneInput" type="tel" hintText="" floatingLabelText="Phone Number"
-                               fullWidth={true}/>
+                               fullWidth={true} onEnterKeyDown={this.saveMember}/>
                 </Dialog>
             </div>
         )
