@@ -7,6 +7,7 @@
     "clean": "rimraf bundle/dist",
     "build:webpack": "NODE_ENV=production webpack --config webpack.config.production.js",
     "build": "npm run clean && npm run build:webpack",
+    "firebase-deploy": "npm run build && firebase deploy",
     "start": "babel-node devServer.js"
   },
   "author": "",
