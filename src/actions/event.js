@@ -44,7 +44,9 @@ function loadOpenEvents(eventUid) {
     return (dispatch) => {
         if(eventUid){
             eventsRef.child(eventUid).once('value', (snapshot) => {
-                dispatch(loadSuccess([snapshot.val()]));
+                let events = {};
+                events[eventUid] = snapshot.val();
+                dispatch(loadSuccess(events));
             }, (error) => {
                 console.log(error);
             });
