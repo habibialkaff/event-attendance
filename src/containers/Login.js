@@ -7,8 +7,6 @@ import RaisedButton from 'material-ui/lib/raised-button';
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.handleLogin = this.handleLogin.bind(this);
-        this.handleAdminLogin = this.handleAdminLogin.bind(this);
     }
 
     handleLogin = (event) => {
@@ -23,9 +21,15 @@ class Login extends Component {
         this.props.dispatch(ssoLogin());
     };
 
+    componentWillMount = () => {
+        if (this.props.user) {
+            this.props.history.pushState(null, '/');
+        }
+    };
+
     componentWillReceiveProps = (nextProps) => {
         if (nextProps.user) {
-            this.context.history.pushState(null, '/');
+            this.props.history.pushState(null, '/');
         }
     };
 
@@ -57,11 +61,11 @@ Login.contextTypes = {
 
 function mapStateToProps(state) {
     const {auth} = state;
-    if (auth) {
-        return {user: auth.user, loginError: auth.loginError};
-    }
+    return {
+        user: auth.user,
+        loginError: auth.loginError
+    };
 
-    return {user: null};
 }
 
 export default connect(mapStateToProps)(Login);

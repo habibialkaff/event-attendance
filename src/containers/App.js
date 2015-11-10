@@ -9,7 +9,6 @@ import {checkAuth, logout} from '../actions/auth';
 class App extends Component {
     constructor(props) {
         super(props);
-        this.props.dispatch(checkAuth());
 
         this.state = {
             muiTheme: Styles.ThemeManager.getMuiTheme(Styles.LightRawTheme)
@@ -30,6 +29,8 @@ class App extends Component {
     }
 
     componentWillMount() {
+        this.props.dispatch(checkAuth());
+
         let newMuiTheme = Styles.ThemeManager.modifyRawThemePalette(this.state.muiTheme, {
             accent1Color: Styles.Colors.purple300
         });

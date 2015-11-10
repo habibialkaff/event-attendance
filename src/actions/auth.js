@@ -98,25 +98,38 @@ function ssoLogin() {
     }
 
     return (dispatch) => {
+        let ssoError = (error) => {
+            console.log("Login Failed!", error);
+            dispatch(ssoLoginFailure());
+        };
+
         dispatch(ssoLoginRequest());
 
-        baseRef.authWithOAuthPopup("google", function (error, authData) {
+        baseRef.authWithOAuthPopup("google", (error) => {
             if (error) {
-                console.log("Login Failed!", error);
-                dispatch(ssoLoginFailure());
+                if (error.code === 'TRANSPORT_UNAVAILABLE') {
+                    baseRef.authWithOAuthRedirect("google", (error) => {
+                        if(error) {
+                            ssoError(error);
+                        }
+                    });
+                }
+                else {
+                    ssoError(error);
+                }
             } else {
-                baseRef.child('testAuth').once('value', (snaphost) => {
-                    let authUser = {
-                        isSuperUser: true,
-                        eventUid: null
-                    };
+                let authUser = {
+                    isSuperUser: true,
+                    eventUid: null
+                };
 
-                    localStorage.setItem('authUser', JSON.stringify(authUser));
-
-                    dispatch(ssoLoginSuccess(authUser));
-                }, (error) => {
-                    console.log(error);
-                    dispatch(ssoLoginFailure());
+                validateAndStoreUser(authUser, (authUser, error) => {
+                    if (!error) {
+                        dispatch(ssoLoginSuccess(authUser));
+                    }
+                    else {
+                        ssoError(error);
+                    }
                 });
             }
         }, {
@@ -125,19 +138,48 @@ function ssoLogin() {
     }
 }
 
+function validateAndStoreUser(authUser, cb) {
+    baseRef.child('testAuth').once('value', () => {
+        localStorage.setItem('authUser', JSON.stringify(authUser));
+        cb(authUser, null);
+    }, (error) => {
+        cb(null, error);
+    });
+}
+
 function checkAuth() {
     return (dispatch) => {
-        let authUser = null;
+        let callback = (authData) => {
+            let authChecked = (authUser, error) => {
+                if (!error) {
+                    dispatch({
+                        type: AUTH_CHECKED,
+                        user: authUser
+                    });
+                }
+            };
 
-        let authData = baseRef.getAuth();
-        if(authData) {
-            authUser = JSON.parse(localStorage.getItem('authUser'));
-        }
+            if (authData) {
+                let authUser = JSON.parse(localStorage.getItem('authUser'));
 
-        dispatch({
-            type: AUTH_CHECKED,
-            user: authUser
-        });
+                if (!authUser) {
+                    //Oauth redirect
+                    authUser = {
+                        isSuperUser: true,
+                        eventUid: null
+                    };
+
+                    validateAndStoreUser(authUser, authChecked);
+                }
+                else {
+                    authChecked(authUser, null);
+                }
+            }
+
+            baseRef.offAuth(callback);
+        };
+
+        baseRef.onAuth(callback);
     }
 }
 

@@ -109,7 +109,7 @@ class Home extends Component {
         }
     }
 
-    componentWillUpdate() {
+    componentWillReceiveProps() {
         if (!this.state.selectedEvent) {
             let keys = Object.keys(this.props.events);
 
