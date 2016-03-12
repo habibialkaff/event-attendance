@@ -16,7 +16,7 @@ const reducer = combineReducers(
 let middleware = [thunkMiddleware];
 
 if (process.env.NODE_ENV !== 'production') {
-    middleware = [...middleware, logger]
+    middleware = [...middleware, logger];
 }
 
 const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore);

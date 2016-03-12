@@ -23,14 +23,14 @@ function attachLoadEvents() {
             dispatch(loadSuccess(snapshot.val()));
         }, (error) => {
             console.log(error);
-        })
-    }
+        });
+    };
 }
 
 function detachLoadEvents() {
-    return (dispatch) => {
+    return () => {
         eventsRef.off('value');
-    }
+    };
 }
 
 function loadOpenEvents(eventUid) {
@@ -38,11 +38,11 @@ function loadOpenEvents(eventUid) {
         return {
             type: LOADOPENEVENT_SUCCESS,
             openedEvents: data
-        }
+        };
     }
 
     return (dispatch) => {
-        if(eventUid){
+        if (eventUid) {
             eventsRef.child(eventUid).once('value', (snapshot) => {
                 let events = {};
                 events[eventUid] = snapshot.val();
@@ -56,22 +56,20 @@ function loadOpenEvents(eventUid) {
                 dispatch(loadSuccess(snapshot.val()));
             }, (error) => {
                 console.log(error);
-            })
+            });
         }
-    }
+    };
 }
 
 function update(event, uid) {
-    return (dispatch) => {
+    return () => {
         if (!uid) {
             let childRef = eventsRef.push();
 
             registerEventAdmin(childRef.key()).then((auth) => {
-                event.admin = {
-                    ...auth
-                };
+                event.admin = auth;
 
-                childRef.set(event, (error) => {
+                childRef.set(event, () => {
 
                 });
             });
@@ -84,14 +82,12 @@ function update(event, uid) {
             }
             else {
                 registerEventAdmin(uid).then((auth) => {
-                    event.admin = {
-                        ...auth
-                    };
+                    event.admin = auth;
                     eventsRef.child(uid).set(event);
-                })
+                });
             }
         }
-    }
+    };
 }
 
 function attachEventAttendance(eventUid) {
@@ -99,28 +95,28 @@ function attachEventAttendance(eventUid) {
         return {
             type: RELOADEVENTATTENDANCES_SUCCESS,
             attendances: data
-        }
+        };
     }
 
     return (dispatch) => {
         eventsRef.child(eventUid).child('attendances').on('value', (snapshot) => {
             dispatch(attachSuccess(snapshot.val()));
-        })
-    }
+        });
+    };
 }
 
 function detachEventAttendance(eventUid) {
-    return (dispatch) => {
+    return () => {
         eventsRef.child(eventUid).child('attendances').off('value');
-    }
+    };
 }
 
 function updateAttendance(memberUid, eventUid, isAttended) {
 
-    return (dispatch) => {
+    return () => {
         let childRef = eventsRef.child(eventUid).child('attendances');
         childRef.child(memberUid).set(isAttended);
-    }
+    };
 }
 
 function registerEventAdmin(eventId) {
@@ -128,9 +124,9 @@ function registerEventAdmin(eventId) {
         return Math.floor(Math.random() * (max - min)) + min;
     }
 
-    let p = new Promise((resolve, reject) => {
-        let email = `${getRandomInt(0, 100000)}@event.com`;
-        let password = `${getRandomInt(0, 100000000)}`;
+    let p = new Promise((resolve) => {
+        let email = `${getRandomInt(1, 1000)}@event.com`;
+        let password = `${getRandomInt(1, 100000)}`;
 
         baseRef.createUser({
             email: email,
@@ -145,26 +141,26 @@ function registerEventAdmin(eventId) {
                 email: email,
                 password: password
             });
-        })
+        });
     });
 
     return p;
 }
 
 function removeEventAdmin(admin) {
-    let p = new Promise((resolve, reject) => {
+    let p = new Promise((resolve) => {
         baseRef.removeUser({
             email: admin.email,
             password: admin.password
-        }, (error) => {
+        }, () => {
             eventAdminsRef.child(admin.uid).remove();
             resolve();
-        })
+        });
     });
 
     return p;
 }
 
 export {attachLoadEvents, detachLoadEvents, loadOpenEvents,
-    update, updateAttendance, attachEventAttendance, detachEventAttendance}
+update, updateAttendance, attachEventAttendance, detachEventAttendance};
 

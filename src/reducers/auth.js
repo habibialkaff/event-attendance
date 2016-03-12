@@ -1,7 +1,7 @@
 import {
     LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE,
     LOGOUT_SUCCESS,
-    SSOLOGIN_REQUEST, SSOLOGIN_SUCCESS, SSOLOGIN_FAILURE,
+    SSOLOGIN_REQUEST, SSOLOGIN_SUCCESS,
     AUTH_CHECKED
 } from '../actions/auth';
 
@@ -18,14 +18,15 @@ function auth(state = initialState, action = {}) {
             return {
                 ...state,
                 loggingIn: false,
-                user: action.user
+                user: action.user,
+                loginError: ''
             };
         case LOGIN_FAILURE:
             return {
                 ...state,
                 loggingIn: false,
                 user: null,
-                loginError: action.error
+                loginError: action.error.message
             };
         case SSOLOGIN_REQUEST:
             return {

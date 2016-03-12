@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import {FlatButton, Toggle, Checkbox} from 'material-ui';
+import FlatButton from 'material-ui/lib/flat-button';
+import Checkbox from 'material-ui/lib/checkbox';
 
 
 class Attendance extends Component {
@@ -14,11 +15,15 @@ class Attendance extends Component {
         this.props.editMember(this.props.member);
     }
 
-    setAttendance() {
-        this.props.setAttendance(this.props.member.uid, this.refs.toggle.isChecked());
+    setAttendance(e, flag) {
+        this.props.setAttendance(this.props.member.uid, flag);
+    }
+    
+    shouldComponentUpdate(nextProps) {
+        return nextProps.isAttended !== this.props.isAttended || nextProps.member !== this.props.member;
     }
 
-    render() {
+    render() {      
         return (
             <div data-layout="row">
                 <div data-flex="20" data-layout="column" data-layout-align="center center">
@@ -40,12 +45,19 @@ class Attendance extends Component {
                 </div>
                 <div data-flex="20" data-layout="column" data-layout-align="center center">
                     <div>
-                        <Checkbox ref="toggle" defaultChecked={this.props.isAttended} onCheck={this.setAttendance}/>
+                        <Checkbox defaultChecked={this.props.isAttended} onCheck={this.setAttendance}/>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
+
+Attendance.propTypes = {
+    isAttended: PropTypes.bool,
+    member: PropTypes.object,
+    setAttendance: PropTypes.func,
+    editMember: PropTypes.func
+};
 
 export default Attendance;

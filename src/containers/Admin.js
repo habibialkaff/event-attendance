@@ -2,24 +2,33 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {attachLoadEvents, detachLoadEvents, update} from '../actions/event';
 
-import {TextField, RaisedButton, List, ListItem, Toggle} from 'material-ui';
+import TextField from 'material-ui/lib/text-field';
+import RaisedButton from 'material-ui/lib/raised-button';
+import Toggle from 'material-ui/lib/toggle';
+import {List, ListItem} from 'material-ui/lib/lists';
 
 class Admin extends Component {
     constructor(props) {
         super(props);
 
+        this.editEvent = this.editEvent.bind(this);
+        this.saveEvent = this.saveEvent.bind(this);
+        this.cancelSaveEvent = this.cancelSaveEvent.bind(this);
+        this.toggleEvent = this.toggleEvent.bind(this);
+
+
         this.state = {
             isEditEvent: false
-        }
+        };
     }
 
-    editEvent = () => {
+    editEvent() {
         this.setState({
             isEditEvent: true
-        })
-    };
+        });
+    }
 
-    saveEvent = (e) => {
+    saveEvent(e) {
         e.preventDefault();
 
         let name = this.refs.eventName.getValue();
@@ -39,9 +48,9 @@ class Admin extends Component {
         });
 
         this.refs.eventName.setValue('');
-    };
+    }
 
-    cancelSaveEvent = (e) => {
+    cancelSaveEvent(e) {
         e.preventDefault();
 
         this.setState({
@@ -49,16 +58,16 @@ class Admin extends Component {
         });
 
         this.refs.eventName.setValue('');
-    };
+    }
 
-    toggleEvent = (key, e) => {
+    toggleEvent(key, e) {
         e.preventDefault();
 
         let event = this.props.events[key];
 
         event.isClosed = !event.isClosed;
         this.props.dispatch(update(event, key));
-    };
+    }
 
     componentWillMount() {
         this.props.dispatch(attachLoadEvents());
@@ -104,22 +113,22 @@ class Admin extends Component {
                                     let selectedEvent = this.props.events[key];
                                     let rightToggle =
                                         <Toggle defaultToggled={!this.props.events[key].isClosed}
-                                                onToggle={this.toggleEvent.bind(this, key)}/>;
+                                            onToggle={this.toggleEvent.bind(this, key) }/>;
 
                                     return <ListItem key={i}
-                                                     primaryText={<div style={listItemStyle}>{this.props.events[key].name}</div>}
-                                                     rightToggle={rightToggle}
-                                                     secondaryText={
-                                                        <p>
-                                                            <span>
-                                                                Username: {selectedEvent.admin.email}
-                                                            </span>
-                                                            <br/>
-                                                            <span>
-                                                                Password: {selectedEvent.admin.password}
-                                                            </span>
-                                                        </p>
-                                                     } secondaryTextLines={2}/>;
+                                        primaryText={<div style={listItemStyle}>{this.props.events[key].name}</div>}
+                                        rightToggle={rightToggle}
+                                        secondaryText={
+                                            <p>
+                                                <span>
+                                                    Username: {selectedEvent.admin.email}
+                                                </span>
+                                                <br/>
+                                                <span>
+                                                    Password: {selectedEvent.admin.password}
+                                                </span>
+                                            </p>
+                                        } secondaryTextLines={2}/>;
                                 }
                             })
                         }
@@ -128,22 +137,25 @@ class Admin extends Component {
                                 let event = this.props.events[key];
                                 if (event.isClosed) {
                                     return <ListItem key={i} primaryText={<div style={listItemStyle}>{event.name}</div>}
-                                                     rightToggle={<Toggle defaultToggled={!event.isClosed}                                                     
-                                      onToggle={this.toggleEvent.bind(this, key)}/>}/>;
+                                        rightToggle={<Toggle defaultToggled={!event.isClosed}
+                                            onToggle={this.toggleEvent.bind(this, key) }/>}/>;
                                 }
                             })
                         }
                     </List>
                 </div>
             </div>
-        )
+        );
     }
 }
 
-function mapStateToProps(state) {
-    const {auth, event} = state;
+Admin.propTypes = {
+    events: React.PropTypes.object
+};
 
-    let divs = [];
+function mapStateToProps(state) {
+    const { event} = state;
+
     let events = event.events || {};
 
     return {

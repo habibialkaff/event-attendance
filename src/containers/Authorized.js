@@ -1,11 +1,11 @@
-import {Component} from 'react';
+import {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 
 class Authorized extends Component {
     componentWillMount() {
-        let {history, user} = this.props;
+        let {user} = this.props;
         if (!user) {
-            history.replaceState(null, '/login');
+            this.context.router.replace('/login');
         }
     }
 
@@ -13,6 +13,14 @@ class Authorized extends Component {
         return this.props.children;
     }
 }
+
+Authorized.contextTypes = {
+    router: PropTypes.object.isRequired
+};
+
+Authorized.propTypes = {
+    user: PropTypes.object
+};
 
 function mapStateToProps(state) {
     return {user: state.auth.user};

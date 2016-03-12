@@ -1,7 +1,6 @@
 import Firebase from 'firebase';
 import {BASE_URL} from './constant';
 const baseRef = new Firebase(BASE_URL);
-const loginsRef = baseRef.child('logins');
 const eventAdminsRef = baseRef.child('eventAdmins');
 
 export const AUTH_CHECKED = 'AUTH_CHECKED';
@@ -58,10 +57,10 @@ function login(user, password) {
 
                     localStorage.setItem('authUser', JSON.stringify(authUser));
 
-                    dispatch(loginSuccess(authUser))
+                    dispatch(loginSuccess(authUser));
                 });
             }
-        })
+        });
     };
 }
 
@@ -73,42 +72,42 @@ function logout() {
     return (dispatch) => {
         dispatch({
             type: LOGOUT_SUCCESS
-        })
-    }
+        });
+    };
 }
 
 function ssoLogin() {
     function ssoLoginRequest() {
         return {
             type: SSOLOGIN_REQUEST
-        }
+        };
     }
 
     function ssoLoginSuccess(user) {
         return {
             type: SSOLOGIN_SUCCESS,
             user: user
-        }
+        };
     }
 
     function ssoLoginFailure() {
         return {
             type: SSOLOGIN_FAILURE
-        }
+        };
     }
 
     return (dispatch) => {
         let ssoError = (error) => {
-            console.log("Login Failed!", error);
+            console.log('Login Failed!', error);
             dispatch(ssoLoginFailure());
         };
 
         dispatch(ssoLoginRequest());
 
-        baseRef.authWithOAuthPopup("google", (error) => {
+        baseRef.authWithOAuthPopup('google', (error) => {
             if (error) {
                 if (error.code === 'TRANSPORT_UNAVAILABLE') {
-                    baseRef.authWithOAuthRedirect("google", (error) => {
+                    baseRef.authWithOAuthRedirect('google', (error) => {
                         if(error) {
                             ssoError(error);
                         }
@@ -133,9 +132,9 @@ function ssoLogin() {
                 });
             }
         }, {
-            scope: "email"
+            scope: 'email'
         });
-    }
+    };
 }
 
 function validateAndStoreUser(authUser, cb) {
@@ -180,7 +179,7 @@ function checkAuth() {
         };
 
         baseRef.onAuth(callback);
-    }
+    };
 }
 
 export {ssoLogin, login, logout, checkAuth};

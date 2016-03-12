@@ -37,8 +37,14 @@ class Header extends Component {
                 {LoginLink}
                 {LogoutLink}
             </div>
-        )
+        );
     }
 }
+
+Header.propTypes = {
+    isLoggedIn: PropTypes.bool,
+    isSuperUser: PropTypes.bool,
+    handleLogout: PropTypes.func    
+};
 
 export default Header;

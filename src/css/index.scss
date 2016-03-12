@@ -1,7 +1,7 @@
 @import 'layout';
 
-$color-1: #ba68c8;
-$color-1-active: #8f264c;
+$color-1: #546e7a;
+$color-1-active: #263238;
 
 html, body {
   width: 100%;
@@ -24,6 +24,10 @@ html, body {
 
 .txt-gray {
   color: #D3D3D3;
+}
+
+.txt-red {
+  color: #ff0000;    
 }
 
 .color-1 {

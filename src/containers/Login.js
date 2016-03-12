@@ -7,31 +7,34 @@ import RaisedButton from 'material-ui/lib/raised-button';
 class Login extends Component {
     constructor(props) {
         super(props);
+
+        this.handleAdminLogin = this.handleAdminLogin.bind(this);
+        this.handleLogin = this.handleLogin.bind(this);
     }
 
-    handleLogin = (event) => {
+    handleLogin(event) {
         event.preventDefault();
         let username = this.refs.username;
         let password = this.refs.password;
         this.props.dispatch(login(username.getValue(), password.getValue()));
-    };
+    }
 
-    handleAdminLogin = (event) => {
+    handleAdminLogin(event) {
         event.preventDefault();
         this.props.dispatch(ssoLogin());
-    };
+    }
 
-    componentWillMount = () => {
+    componentWillMount() {
         if (this.props.user) {
-            this.props.history.pushState(null, '/');
+            this.context.router.push('/');
         }
-    };
+    }
 
-    componentWillReceiveProps = (nextProps) => {
+    componentWillReceiveProps(nextProps) {
         if (nextProps.user) {
-            this.props.history.pushState(null, '/');
+            this.context.router.push('/');
         }
-    };
+    }
 
     render() {
         return (
@@ -43,6 +46,9 @@ class Login extends Component {
                     <div>
                         <RaisedButton label="LOGIN" primary={true} onClick={this.handleLogin}/>
                     </div>
+                    <div>
+                        <span className="txt-red">{this.props.loginError}</span>
+                    </div>
                 </div>
                 <div data-flex="20" data-layout="column" data-layout-align="end center">
                     <div data-layout-margin>
@@ -50,13 +56,18 @@ class Login extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
 Login.contextTypes = {
-    history: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
     store: PropTypes.object.isRequired
+};
+
+Login.propTypes = {
+    user: PropTypes.object,
+    loginError: PropTypes.string
 };
 
 function mapStateToProps(state) {

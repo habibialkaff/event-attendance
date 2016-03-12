@@ -13,7 +13,7 @@ function attachLoadMembers() {
 
         for (let i in data) {
             if (data.hasOwnProperty(i)) {
-                if(data[i].name == '' && data[i].phone == ''){
+                if (data[i].name == '' && data[i].phone == '') {
                     continue;
                 }
 
@@ -32,7 +32,7 @@ function attachLoadMembers() {
         return {
             type: LOADMEMBER_SUCCESS,
             members: members
-        }
+        };
     }
 
     return (dispatch) => {
@@ -40,14 +40,14 @@ function attachLoadMembers() {
             dispatch(loadSuccess(snapshot.val()));
         }, (error) => {
             console.log(error);
-        })
-    }
+        });
+    };
 }
 
 function detachLoadMembers() {
-    return (dispatch) => {
+    return () => {
         membersRef.off('value');
-    }
+    };
 }
 
 function updateMember(member, uid) {
@@ -79,7 +79,7 @@ function updateMember(member, uid) {
                 dispatch(updateSuccess(uid));
             }
         });
-    }
+    };
 }
 
-export {attachLoadMembers, detachLoadMembers, updateMember}
+export {attachLoadMembers, detachLoadMembers, updateMember};
