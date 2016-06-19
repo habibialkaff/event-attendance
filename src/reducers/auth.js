@@ -47,6 +47,7 @@ function auth(state = initialState, action = {}) {
     case AUTH_CHECKED:
       return {
         ...state,
+        isAuthChecked: true,
         user: action.user
       };
     default:

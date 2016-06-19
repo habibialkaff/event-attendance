@@ -23,8 +23,8 @@ class Home extends Component {
     this.setAttendance = this.setAttendance.bind(this);
     this.onSearchEnter = this.onSearchEnter.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
-    this.onChange_SearchText = this.onChangeSearchText.bind(this);
-    this.updateSearchResult = debounce(this.updateSearchResult.bind(this), 500);
+    this.onChangeSearchText = this.onChangeSearchText.bind(this);
+    this.updateSearchResult = debounce(this.updateSearchResult.bind(this), 250);
 
     this.memberKeys = null;
 
@@ -195,7 +195,7 @@ class Home extends Component {
         (<div>
           <div data-layout-margin>
             <RaisedButton
-              label="ADD NEW" primary onClick={this.editMember.bind(this, null) }
+              label="ADD NEW" primary onClick={this.editMember }
               fullWidth labelStyle={{ 'fontSize': '1.2em' }} />
           </div>
           <div>
@@ -223,25 +223,22 @@ class Home extends Component {
         </div>);
     }
 
-    const editMember =
-      (<EditMember
-        showEditMember={this.state.showEditMember} selectedMember={this.state.selectedMember}
-        searchInputValue={this.state.searchInputValue} saveMember={this.saveMember}
-        onCancel={this.cancelEditMember} />);
-
     const actions = [
       <FlatButton label="Ok" onTouchTap={this.closeDialog} />
     ];
 
-    return (
+    return content !== null ? (
       <div data-layout-margin>
         {content}
-        {editMember}
+        <EditMember
+          showEditMember={this.state.showEditMember} selectedMember={this.state.selectedMember}
+          searchInputValue={this.state.searchInputValue} saveMember={this.saveMember}
+          onCancel={this.cancelEditMember} />
         <Dialog open={this.state.showMemberSavedDialog} actions={actions} modal>
           <span>Member is updated and set to Attended</span>
         </Dialog>
       </div>
-    );
+    ) : <div>Loading...</div>;
   }
 }
 
@@ -250,7 +247,8 @@ Home.propTypes = {
   events: PropTypes.object,
   members: PropTypes.object,
   attendances: PropTypes.object,
-  updatedMemberUid: PropTypes.string
+  updatedMemberUid: PropTypes.string,
+  dispatch: PropTypes.func
 };
 
 function mapStateToProps(state) {

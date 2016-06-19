@@ -1,3 +1,4 @@
+import firebase from 'firebase';
 import {firebaseRef} from './constant';
 
 const eventAdminsRef = firebaseRef.child('eventAdmins');
@@ -15,12 +16,24 @@ export const SSOLOGIN_FAILURE = 'SSOLOGIN_FAILURE';
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 
 function validateAndStoreUser(authUser, cb) {
-  firebaseRef.child('testAuth').once('value', () => {
-    localStorage.setItem('authUser', JSON.stringify(authUser));
-    cb(authUser, null);
-  }, (error) => {
-    cb(null, error);
-  });
+  firebaseRef.child('testAuth').once('value')
+    .then(() => {
+      localStorage.setItem('authUser', JSON.stringify(authUser));
+      cb(authUser, null);
+    }, (error) => {
+      cb(null, error);
+    });
+}
+
+function logout() {
+  firebase.auth().signOut();
+  localStorage.removeItem('authUser');
+
+  return (dispatch) => {
+    dispatch({
+      type: LOGOUT_SUCCESS
+    });
+  };
 }
 
 function login(username, password) {
@@ -47,13 +60,8 @@ function login(username, password) {
   return (dispatch) => {
     dispatch(loginRequest(username));
 
-    firebaseRef.authWithPassword({
-      email: username,
-      password
-    }, (error, authData) => {
-      if (error) {
-        dispatch(loginFailure(error));
-      } else {
+    firebase.auth().signInWithEmailAndPassword(username, password)
+      .then((authData) => {
         eventAdminsRef.child(authData.uid).once('value', (snapshot) => {
           const authUser = {
             isSuperUser: false,
@@ -64,20 +72,10 @@ function login(username, password) {
 
           dispatch(loginSuccess(authUser));
         });
-      }
-    });
-  };
-}
-
-
-function logout() {
-  firebaseRef.unauth();
-  localStorage.removeItem('authUser');
-
-  return (dispatch) => {
-    dispatch({
-      type: LOGOUT_SUCCESS
-    });
+      })
+      .catch((error) => {
+        dispatch(loginFailure(error));
+      });
   };
 }
 
@@ -109,50 +107,49 @@ function ssoLogin() {
 
     dispatch(ssoLoginRequest());
 
-    firebaseRef.authWithOAuthPopup('google', (popupError) => {
-      if (popupError) {
-        if (popupError.code === 'TRANSPORT_UNAVAILABLE') {
-          firebaseRef.authWithOAuthRedirect('google', (redirectError) => {
-            if (redirectError) {
-              ssoError(redirectError);
-            }
-          });
-        } else {
-          ssoError(popupError);
-        }
-      } else {
-        const authUser = {
-          isSuperUser: true,
-          eventUid: null
-        };
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('email');
+    auth.signInWithPopup(provider).then(() => {
+      const authUser = {
+        isSuperUser: true,
+        eventUid: null
+      };
 
-        validateAndStoreUser(authUser, (user, error) => {
-          if (!error) {
-            dispatch(ssoLoginSuccess(user));
-          } else {
-            ssoError(error);
-          }
-        });
-      }
-    },
-      {
-        scope: 'email'
+      validateAndStoreUser(authUser, (user, error) => {
+        if (!error) {
+          dispatch(ssoLoginSuccess(user));
+        } else {
+          ssoError(error);
+        }
       });
+    }).catch((popupError) => {
+      if (popupError.code === 'TRANSPORT_UNAVAILABLE') {
+        auth.signInWithRedirect(provider)
+          .catch((redirectError) => {
+            ssoError(redirectError);
+          });
+      } else {
+        ssoError(popupError);
+      }
+    });
   };
 }
 
 function checkAuth() {
   return (dispatch) => {
-    const callback = (authData) => {
-      const authChecked = (authUser, error) => {
-        if (!error) {
-          dispatch({
-            type: AUTH_CHECKED,
-            user: authUser
-          });
-        }
-      };
+    const authChecked = (user, error) => {
+      if (!error) {
+        dispatch({
+          type: AUTH_CHECKED,
+          user
+        });
+      }
+    };
 
+    let unsubscribe = null;
+
+    const callback = (authData) => {
       if (authData) {
         let authUser = JSON.parse(localStorage.getItem('authUser'));
 
@@ -167,12 +164,14 @@ function checkAuth() {
         } else {
           authChecked(authUser, null);
         }
+      } else {
+        authChecked(null, null);
       }
 
-      firebaseRef.offAuth(callback);
+      unsubscribe();
     };
 
-    firebaseRef.onAuth(callback);
+    unsubscribe = firebase.auth().onAuthStateChanged(callback);
   };
 }
 

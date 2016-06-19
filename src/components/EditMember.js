@@ -11,6 +11,8 @@ class EditMember extends Component {
     this.saveMember = this.saveMember.bind(this);
     this.cancel = this.cancel.bind(this);
     this.onInputEnter = this.onInputEnter.bind(this);
+    this.onChangeName = this.onChangeName.bind(this);
+    this.onChangePhone = this.onChangePhone.bind(this);
 
     this.standardActions = [
       <FlatButton
@@ -64,6 +66,17 @@ class EditMember extends Component {
     }
   }
 
+  onChangeName(e) {
+    this.setState({
+      nameInput: e.target.value
+    });
+  }
+  onChangePhone(e) {
+    this.setState({
+      phoneInput: e.target.value
+    });
+  }
+
   cancel() {
     this.props.onCancel();
   }
@@ -83,10 +96,12 @@ class EditMember extends Component {
     return (
       <div>
         <Dialog open={this.props.showEditMember} actions={this.standardActions} modal>
-          <TextField defaultValue={this.state.nameInput} hintText="" floatingLabelText="Name" fullWidth />
           <TextField
-            defaultValue={this.state.phoneInput} type="tel" hintText="" floatingLabelText="Phone Number"
-            fullWidth onKeyDown={this.onInputEnter} />
+            value={this.state.nameInput || ''} onChange={this.onChangeName}
+            hintText="" floatingLabelText="Name" fullWidth />
+          <TextField
+            value={this.state.phoneInput || ''} onChange={this.onChangePhone} type="tel" hintText=""
+            floatingLabelText="Phone Number" fullWidth onKeyDown={this.onInputEnter} />
         </Dialog>
       </div>
     );

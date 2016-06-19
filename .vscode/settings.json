@@ -1,18 +1,21 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "search.exclude": {
-		"**/node_modules": true,
-		"**/bower_components": true,
-        "**/bundle/**": true
-	},
-    "eslint.enable": true,
-    "files.exclude": {
-        "**/.git": true,
-        "**/.DS_Store": true,
-        "node_modules/**": false,
-        "bundle": true,
-        "etc": true,
-        "npm-debug.log": true
-    },
-    "javascript.validate.enable": false
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/bundle/**": true
+  },
+  "eslint.enable": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "node_modules/**": false,
+    "bundle": true,
+    "etc": true,
+    "npm-debug.log": true
+  },
+  "javascript.validate.enable": false,
+  "files.associations": {
+    "*.js": "javascriptreact"
+  }
 }

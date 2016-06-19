@@ -28,12 +28,12 @@ class Login extends Component {
     event.preventDefault();
     const username = this.refs.username;
     const password = this.refs.password;
-    this.props.dispatch(login(username.getValue(), password.getValue()));
+    this.props.login(username.getValue(), password.getValue());
   }
 
   handleAdminLogin(event) {
     event.preventDefault();
-    this.props.dispatch(ssoLogin());
+    this.props.ssoLogin();
   }
 
   render() {
@@ -67,7 +67,9 @@ Login.contextTypes = {
 
 Login.propTypes = {
   user: PropTypes.object,
-  loginError: PropTypes.string
+  loginError: PropTypes.string,
+  login: PropTypes.func,
+  ssoLogin: PropTypes.func
 };
 
 function mapStateToProps(state) {
@@ -78,4 +80,16 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Login);
+function mapDispatchToProps(dispatch) {
+  return {
+    login: (username, password) => {
+      dispatch(login(username, password));
+    },
+
+    ssoLogin: () => {
+      dispatch(ssoLogin());
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

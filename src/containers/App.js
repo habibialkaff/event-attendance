@@ -29,7 +29,7 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.props.dispatch(checkAuth());
+    this.props.checkAuth();
 
     const newPalette = merge(this.state.muiTheme.baseTheme.palette, { accent1Color: blueGrey600 });
     const muiTheme = getMuiTheme(update(this.state.muiTheme.baseTheme, { palette: { $set: newPalette } }));
@@ -40,12 +40,12 @@ class App extends Component {
   handleLogout(e) {
     e.preventDefault();
 
-    this.props.dispatch(logout());
+    this.props.logout();
     this.context.router.push('/login');
   }
 
   render() {
-    return (
+    return this.props.isAuthChecked ? (
       <div data-layout-fill>
         <div className="header">
           <Header
@@ -55,7 +55,7 @@ class App extends Component {
           {this.props.children}
         </div>
       </div>
-    );
+    ) : <div>Loading...</div>;
   }
 }
 
@@ -69,17 +69,33 @@ App.childContextTypes = {
 };
 
 App.propTypes = {
+  isAuthChecked: React.PropTypes.bool,
   isLoggedIn: React.PropTypes.bool,
   isSuperUser: React.PropTypes.bool,
-  children: React.PropTypes.element
+  children: React.PropTypes.element,
+  checkAuth: React.PropTypes.func,
+  logout: React.PropTypes.func
 };
 
 function mapStateProps(state) {
   const {auth} = state;
   return {
-    isLoggedIn: auth.user,
+    isAuthChecked: auth.isAuthChecked,
+    isLoggedIn: auth.user !== null && auth.user !== undefined,
     isSuperUser: auth.user && auth.user.isSuperUser
   };
 }
 
-export default connect(mapStateProps)(App);
+function mapDispatchToProps(dispatch) {
+  return {
+    checkAuth: () => {
+      dispatch(checkAuth());
+    },
+
+    logout: () => {
+      dispatch(logout());
+    }
+  };
+}
+
+export default connect(mapStateProps, mapDispatchToProps)(App);

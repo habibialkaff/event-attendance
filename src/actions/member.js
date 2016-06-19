@@ -59,7 +59,7 @@ function updateMember(member, uid) {
 
     if (!uid) {
       childRef = membersRef.push();
-      uid = childRef.key();
+      uid = childRef.key;
     } else {
       childRef = membersRef.child(uid);
     }
