@@ -1,13 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import keycode from 'keycode';
-import debounce from 'lodash.debounce';
 
-import Attendance from '../components/Attendance';
-import EditMember from '../components/EditMember';
+import EditMember from '../components/home/EditMember';
+import Search from '../components/home/Search';
 
 import {connect} from 'react-redux';
 import {loadOpenEvents, updateAttendance, attachEventAttendance, detachEventAttendance} from '../actions/event';
@@ -21,16 +18,12 @@ class Home extends Component {
     this.cancelEditMember = this.cancelEditMember.bind(this);
     this.saveMember = this.saveMember.bind(this);
     this.setAttendance = this.setAttendance.bind(this);
-    this.onSearchEnter = this.onSearchEnter.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
-    this.onChangeSearchText = this.onChangeSearchText.bind(this);
-    this.updateSearchResult = debounce(this.updateSearchResult.bind(this), 250);
 
     this.memberKeys = null;
 
     this.state = {
       selectedEvent: null,
-      filteredMembers: [],
       selectedMember: null,
       searchInputValue: '',
       showEditMember: false,
@@ -68,20 +61,6 @@ class Home extends Component {
 
     if (this.state.selectedEventUid) {
       this.props.dispatch(detachEventAttendance(this.state.selectedEventUid));
-    }
-  }
-
-  onChangeSearchText(e) {
-    this.setState({
-      searchInputValue: e.target.value
-    });
-
-    this.updateSearchResult();
-  }
-
-  onSearchEnter(event) {
-    if (keycode(event) === 'enter' && this.state.filteredMembers.length === 1) {
-      this.setAttendance(this.state.filteredMembers[0].uid, true);
     }
   }
 
@@ -124,39 +103,6 @@ class Home extends Component {
     }, 2000);
   }
 
-  updateSearchResult() {
-    const inputValue = this.state.searchInputValue;
-
-    const val = inputValue.toLowerCase();
-    const arr = [];
-
-    if (!this.memberKeys) {
-      this.memberKeys = Object.keys(this.props.members);
-    }
-
-    if (val) {
-      let count = 0;
-
-      this.memberKeys.some((key) => {
-        if (count > 50) {
-          return true;
-        }
-
-        if (key.toLowerCase().indexOf(val) > -1) {
-          const items = this.props.members[key];
-          arr.push(...items);
-          count += items.length;
-        }
-
-        return false;
-      });
-    }
-
-    this.setState({
-      filteredMembers: arr
-    });
-  }
-
   closeDialog() {
     this.setState({
       showMemberSavedDialog: false
@@ -164,6 +110,7 @@ class Home extends Component {
   }
 
   render() {
+    console.log('test');
     let content = null;
 
     if (!this.state.selectedEvent) {
@@ -174,7 +121,6 @@ class Home extends Component {
         content =
           (<div>
             <h2>Select Event: </h2>
-
             <div>
               {
                 keys.map((key, i) => {
@@ -191,36 +137,19 @@ class Home extends Component {
           </div>);
       }
     } else {
-      let searchResult =
-        (<div>
-          <div data-layout-margin>
-            <RaisedButton
-              label="ADD NEW" primary onClick={this.editMember }
-              fullWidth labelStyle={{ 'fontSize': '1.2em' }} />
-          </div>
-          <div>
-            {this.state.filteredMembers.map((member, i) => {
-              return (<Attendance
-                key={i} member={member}
-                isAttended={this.props.attendances[member.uid]}
-                setAttendance={this.setAttendance} editMember={this.editMember} />);
-            }) }
-          </div>
-        </div>);
-
-      content =
-        (<div>
+      content = (
+        <div>
           <h3 style={{ margin: 0 }}>
             <span className="color-1">{this.state.selectedEvent.name}</span>
           </h3>
-
-          <div>
-            <TextField
-              hintText="" floatingLabelText="Search User" fullWidth
-              onChange={this.onChangeSearchText} onKeyDown={this.onSearchEnter} />
+          <div data-layout-padding data-layout="row" data-layout-align="center center" data-layout-fill>
+            <RaisedButton label="ADD NEW" primary onClick={this.editMember } style={{ width: '100%' }} />
           </div>
-          {searchResult}
-        </div>);
+          <Search
+            members={this.props.members} attendances={this.props.attendances}
+            setAttendance={this.setAttendance} editMember={this.editMember} />
+        </div>
+      );
     }
 
     const actions = [
