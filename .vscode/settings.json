@@ -8,7 +8,11 @@
     "eslint.enable": true,
     "files.exclude": {
         "**/.git": true,
-        "**/.DS_Store": true
-        // "node_modules/**": true
-    }    
+        "**/.DS_Store": true,
+        "node_modules/**": false,
+        "bundle": true,
+        "etc": true,
+        "npm-debug.log": true
+    },
+    "javascript.validate.enable": false
 }

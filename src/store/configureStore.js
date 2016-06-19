@@ -8,19 +8,19 @@ import member from '../reducers/member';
 
 const logger = createLogger();
 const reducer = combineReducers(
-    {
-        auth, event, member
-    }
+  {
+    auth, event, member
+  }
 );
 
 let middleware = [thunkMiddleware];
 
 if (process.env.NODE_ENV !== 'production') {
-    middleware = [...middleware, logger];
+  middleware = [...middleware, logger];
 }
 
 const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore);
 
 export default function configureStore(initialState) {
-    return createStoreWithMiddleware(reducer, initialState);
+  return createStoreWithMiddleware(reducer, initialState);
 }

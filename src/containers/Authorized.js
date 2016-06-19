@@ -2,28 +2,29 @@ import {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 
 class Authorized extends Component {
-    componentWillMount() {
-        let {user} = this.props;
-        if (!user) {
-            this.context.router.replace('/login');
-        }
+  componentWillMount() {
+    const {user} = this.props;
+    if (!user) {
+      this.context.router.replace('/login');
     }
+  }
 
-    render() {
-        return this.props.children;
-    }
+  render() {
+    return this.props.children;
+  }
 }
 
 Authorized.contextTypes = {
-    router: PropTypes.object.isRequired
+  router: PropTypes.object.isRequired
 };
 
 Authorized.propTypes = {
-    user: PropTypes.object
+  user: PropTypes.object,
+  children: PropTypes.element
 };
 
 function mapStateToProps(state) {
-    return {user: state.auth.user};
+  return {user: state.auth.user};
 }
 
 export default connect(mapStateToProps)(Authorized);

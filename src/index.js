@@ -19,21 +19,21 @@ import Admin from './containers/Admin';
 
 const store = configureStore();
 
-let rootElement = document.getElementById('root');
+const rootElement = document.getElementById('root');
 
 ReactDOM.render(
-    <Provider store={store}>
-        <Router history={browserHistory}>
-            <Route path="/" component={App}>
-                <Route path="/login" component={Login}/>
-                <Route component={Authorized}>
-                    <Route path="/home" component={Home}/>
-                    <Route path="/admin" component={Admin}/>
-                </Route>
-                <IndexRedirect to="/home" />
-            </Route>
-            <Redirect from="*" to="/home" />
-        </Router>
-    </Provider>,
-    rootElement
+  <Provider store={store}>
+    <Router history={browserHistory}>
+      <Route path="/" component={App}>
+        <Route path="/login" component={Login} />
+        <Route component={Authorized}>
+          <Route path="/home" component={Home} />
+          <Route path="/admin" component={Admin} />
+        </Route>
+        <IndexRedirect to="/home" />
+      </Route>
+      <Redirect from="*" to="/home" />
+    </Router>
+  </Provider>,
+  rootElement
 );
