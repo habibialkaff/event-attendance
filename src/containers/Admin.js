@@ -4,8 +4,9 @@ import {attachLoadEvents, detachLoadEvents, update} from '../actions/event';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import Toggle from 'material-ui/Toggle';
 import {List, ListItem} from 'material-ui/List';
+
+import {ToggleEvent} from '../components/admin/ToggleEvent';
 
 class Admin extends Component {
   constructor(props) {
@@ -108,27 +109,25 @@ class Admin extends Component {
           <List>
             {
               Object.keys(this.props.events).map((key, i) => {
-                if (!this.props.events[key].isClosed) {
-                  const selectedEvent = this.props.events[key];
-                  let rightToggle = (
-                    <Toggle
-                      defaultToggled={!this.props.events[key].isClosed}
-                      onToggle={this.toggleEvent.bind(this, key) } />
+                const event = this.props.events[key];
+                if (!event.isClosed) {
+                  const rightToggle = (
+                    <ToggleEvent eventKey={key} toggled={!event.isClosed} onToggle={this.toggleEvent} />
                   );
 
                   return (
                     <ListItem
                       key={i}
-                      primaryText={<div style={listItemStyle}>{this.props.events[key].name}</div>}
+                      primaryText={<div style={listItemStyle}>{event.name}</div>}
                       rightToggle={rightToggle}
                       secondaryText={
                         <p>
                           <span>
-                            Username: {selectedEvent.admin.email}
+                            Username: {event.admin.email}
                           </span>
                           <br />
                           <span>
-                            Password: {selectedEvent.admin.password}
+                            Password: {event.admin.password}
                           </span>
                         </p>
                       } secondaryTextLines={2} />
@@ -143,7 +142,7 @@ class Admin extends Component {
                 const event = this.props.events[key];
                 if (event.isClosed) {
                   const rightToggle = (
-                    <Toggle defaultToggled={!event.isClosed} onToggle={this.toggleEvent.bind(this, key) } />
+                    <ToggleEvent eventKey={key} toggled={!event.isClosed} onToggle={this.toggleEvent} />
                   );
 
                   return (
