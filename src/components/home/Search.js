@@ -25,6 +25,9 @@ class Search extends React.Component {
     this.onChangeSearchText = this.onChangeSearchText.bind(this);
     this.updateSearchResult = debounce(this.updateSearchResult.bind(this), 250);
 
+    this.containers = [];
+    for (let i = 0; i < 50; i++) { this.containers.push(''); }
+
     this.state = {
       filteredMembers: []
     };
@@ -82,12 +85,15 @@ class Search extends React.Component {
             onChange={this.onChangeSearchText} onKeyDown={this.onSearchEnter} />
         </div>
         <div>
-          {this.state.filteredMembers.map((member, i) => {
-            return (<Attendance
-              key={i} member={member}
-              isAttended={this.props.attendances[member.uid]}
-              setAttendance={this.props.setAttendance} editMember={this.props.editMember} />);
-          }) }
+          {
+            this.containers.map((temp, i) => {
+              const member = i <= this.state.filteredMembers.length ? this.state.filteredMembers[i] : null;
+              return (<Attendance
+                key={i} member={member}
+                isAttended={member && this.props.attendances[member.uid]}
+                setAttendance={this.props.setAttendance} editMember={this.props.editMember} />);
+            })
+          }
         </div>
       </div>
     );

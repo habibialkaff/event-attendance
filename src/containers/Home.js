@@ -36,12 +36,18 @@ class Home extends Component {
     this.props.dispatch(attachLoadMembers());
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(nextProps) {
     if (!this.state.selectedEvent) {
-      const keys = Object.keys(this.props.events);
+      const keys = Object.keys(nextProps.events);
 
       if (keys.length === 1) {
-        this.selectEvent(keys[0]);
+        const key = keys[0];
+        this.setState({
+          selectedEvent: nextProps.events[key],
+          selectedEventUid: key
+        });
+
+        this.props.dispatch(attachEventAttendance(key));
       }
     }
   }
@@ -110,8 +116,11 @@ class Home extends Component {
   }
 
   render() {
-    console.log('test');
     let content = null;
+
+    if (!this.state.selectedEvent && Object.keys(this.props.events).length === 0) {
+      return <div>Loading...</div>;
+    }
 
     if (!this.state.selectedEvent) {
       const events = this.props.events || {};
@@ -156,7 +165,7 @@ class Home extends Component {
       <FlatButton label="Ok" onTouchTap={this.closeDialog} />
     ];
 
-    return content !== null ? (
+    return (
       <div data-layout-margin>
         {content}
         <EditMember
@@ -167,7 +176,7 @@ class Home extends Component {
           <span>Member is updated and set to Attended</span>
         </Dialog>
       </div>
-    ) : <div>Loading...</div>;
+    );
   }
 }
 

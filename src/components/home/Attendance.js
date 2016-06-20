@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import FlatButton from 'material-ui/FlatButton';
-import Checkbox from 'material-ui/Checkbox';
-
+import AttendanceEditButton from './AttendanceEditButton';
+import AttendanceCheckbox from './AttendanceCheckbox';
 
 class Attendance extends Component {
   constructor(props) {
@@ -12,7 +11,8 @@ class Attendance extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.isAttended !== this.props.isAttended || nextProps.member !== this.props.member;
+    return (nextProps.isAttended || false) !== (this.props.isAttended || false) ||
+      nextProps.member !== this.props.member;
   }
 
   setAttendance(e, flag) {
@@ -24,31 +24,23 @@ class Attendance extends Component {
   }
 
   render() {
+    const isHidden = this.props.member === null || this.props.member === undefined;
     return (
-      <div data-layout="row">
-        <div data-flex="20" data-layout="column" data-layout-align="center center">
-          <FlatButton
-            label="EDIT" primary
-            onClick={this.editMember}
-            style={{ 'minWidth': '0px' }} />
-        </div>
-        <div data-flex="60" data-layout="column" data-layout-align="center start">
+      <div data-layout="row" style={{ display: isHidden ? 'none' : '' }}>
+        <AttendanceEditButton editMember={this.editMember} />
+        <AttendanceCheckbox isAttended={this.props.isAttended} setAttendance={this.setAttendance} />
+        <div data-flex="60" data-flex-order="2" data-layout="column" data-layout-align="center start">
           <div data-hide-sm data-layout="row" data-layout-fill>
             <div
               data-flex="80" data-layout="column"
-              data-layout-align="center start">{this.props.member.name.toUpperCase() }</div>
+              data-layout-align="center start">{!isHidden && this.props.member.name.toUpperCase() }</div>
             <div
               data-flex="20" data-layout="column"
-              data-layout-align="center center">{this.props.member.phone}</div>
+              data-layout-align="center center">{!isHidden && this.props.member.phone}</div>
           </div>
           <div data-hide-gt-sm data-layout="column">
-            <div>{this.props.member.name.toUpperCase() }</div>
-            <div className="txt-gray">{this.props.member.phone}</div>
-          </div>
-        </div>
-        <div data-flex="20" data-layout="column" data-layout-align="center center">
-          <div>
-            <Checkbox defaultChecked={this.props.isAttended} onCheck={this.setAttendance} />
+            <div>{!isHidden && this.props.member.name.toUpperCase() }</div>
+            <div className="txt-gray">{!isHidden && this.props.member.phone}</div>
           </div>
         </div>
       </div>
