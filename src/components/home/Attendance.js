@@ -1,6 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import AttendanceEditButton from './AttendanceEditButton';
 import AttendanceCheckbox from './AttendanceCheckbox';
+import AttendanceDetail from './AttendanceDetail';
+import {isObjectChanged} from '../../helpers/isObjectChanged';
 
 class Attendance extends Component {
   constructor(props) {
@@ -12,7 +14,7 @@ class Attendance extends Component {
 
   shouldComponentUpdate(nextProps) {
     return (nextProps.isAttended || false) !== (this.props.isAttended || false) ||
-      nextProps.member !== this.props.member;
+      isObjectChanged(this.props.member, nextProps.member);
   }
 
   setAttendance(e, flag) {
@@ -28,21 +30,8 @@ class Attendance extends Component {
     return (
       <div data-layout="row" style={{ display: isHidden ? 'none' : '' }}>
         <AttendanceEditButton editMember={this.editMember} />
+        <AttendanceDetail member={this.props.member} />
         <AttendanceCheckbox isAttended={this.props.isAttended} setAttendance={this.setAttendance} />
-        <div data-flex="60" data-flex-order="2" data-layout="column" data-layout-align="center start">
-          <div data-hide-sm data-layout="row" data-layout-fill>
-            <div
-              data-flex="80" data-layout="column"
-              data-layout-align="center start">{!isHidden && this.props.member.name.toUpperCase() }</div>
-            <div
-              data-flex="20" data-layout="column"
-              data-layout-align="center center">{!isHidden && this.props.member.phone}</div>
-          </div>
-          <div data-hide-gt-sm data-layout="column">
-            <div>{!isHidden && this.props.member.name.toUpperCase() }</div>
-            <div className="txt-gray">{!isHidden && this.props.member.phone}</div>
-          </div>
-        </div>
       </div>
     );
   }

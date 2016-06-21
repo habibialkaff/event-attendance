@@ -8,7 +8,7 @@ class AttendanceEditButton extends Component {
 
   render() {
     return (
-      <div data-flex="20" data-flex-order="1" data-layout="column" data-layout-align="center center">
+      <div data-flex="20" data-layout="column" data-layout-align="center center">
         <FlatButton
           label="EDIT" primary
           onClick={this.props.editMember}

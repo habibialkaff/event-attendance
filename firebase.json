@@ -1,15 +1,17 @@
 {
-  "firebase": "saung",
   "public": "bundle",
   "ignore": [
     "firebase.json",
     "**/.*",
     "**/node_modules/**"
   ],
-  "rewrites": [
-    {
-      "source": "**",
-      "destination": "/index.html"
-    }
-  ]
+  "hosting": {
+    "public": "bundle",
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }

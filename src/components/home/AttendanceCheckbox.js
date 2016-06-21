@@ -8,7 +8,7 @@ class AttendanceCheckbox extends Component {
 
   render() {
     return (
-      <div data-flex="20" data-flex-order="3" data-layout="column" data-layout-align="center center">
+      <div data-flex="20" data-layout="column" data-layout-align="center center">
         <div>
           <Checkbox defaultChecked={this.props.isAttended} onCheck={this.props.setAttendance} />
         </div>
