@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf bundle/dist",
-    "build:webpack": "NODE_ENV=production webpack --config webpack.config.production.js",
+    "build:webpack": "NODE_ENV=production babel-node ./node_modules/webpack/bin/webpack --config webpack.config.production.js",
     "build": "npm run clean && npm run build:webpack",
     "firebase-deploy": "npm run build && firebase deploy",
     "start": "node devServer.js",
@@ -37,7 +37,7 @@
     "redux-thunk": "2.1.0"
   },
   "devDependencies": {
-    "babel": "6.5.2",
+    "babel-cli": "6.10.1",
     "babel-core": "6.9.1",
     "babel-eslint": "6.0.4",
     "babel-loader": "6.2.4",
