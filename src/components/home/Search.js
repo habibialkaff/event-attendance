@@ -42,6 +42,7 @@ class Search extends React.Component {
   onChangeSearchText(e) {
     const inputValue = e.target.value;
 
+    this.props.onSearchInputChange(inputValue);
     this.updateSearchResult(inputValue);
   }
 
@@ -105,6 +106,7 @@ Search.propTypes = {
   attendances: React.PropTypes.object,
   setAttendance: React.PropTypes.func,
   editMember: React.PropTypes.func,
+  onSearchInputChange: React.PropTypes.func
 };
 
 export default Search;

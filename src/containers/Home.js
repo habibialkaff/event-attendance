@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import EditMember from '../components/home/EditMember';
 import Search from '../components/home/Search';
+import {SelectEvent} from '../components/home/SelectEvent';
 
 import {connect} from 'react-redux';
 import {loadOpenEvents, updateAttendance, attachEventAttendance, detachEventAttendance} from '../actions/event';
@@ -14,20 +15,23 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.selectEvent = this.selectEvent.bind(this);
+    this.addMember = this.addMember.bind(this);
     this.editMember = this.editMember.bind(this);
     this.cancelEditMember = this.cancelEditMember.bind(this);
     this.saveMember = this.saveMember.bind(this);
     this.setAttendance = this.setAttendance.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
+    this.onSearchInputChange = this.onSearchInputChange.bind(this);
 
     this.memberKeys = null;
+    this.searchInputValue = '';
 
     this.state = {
       selectedEvent: null,
       selectedMember: null,
-      searchInputValue: '',
       showEditMember: false,
-      showMemberSavedDialog: false
+      showMemberSavedDialog: false,
+      searchInputValue: ''
     };
   }
 
@@ -70,6 +74,10 @@ class Home extends Component {
     }
   }
 
+  onSearchInputChange(value) {
+    this.searchInputValue = value;
+  }
+
   setAttendance(memberUid, isAttended) {
     this.props.dispatch(updateAttendance(memberUid, this.state.selectedEventUid, isAttended));
   }
@@ -83,10 +91,19 @@ class Home extends Component {
     this.props.dispatch(attachEventAttendance(key));
   }
 
+  addMember() {
+    this.setState({
+      selectedMember: null,
+      showEditMember: true,
+      searchInputValue: this.searchInputValue
+    });
+  }
+
   editMember(member) {
     this.setState({
       selectedMember: member,
-      showEditMember: true
+      showEditMember: true,
+      searchInputValue: this.searchInputValue
     });
   }
 
@@ -134,11 +151,7 @@ class Home extends Component {
               {
                 keys.map((key, i) => {
                   return (
-                    <div data-flex data-layout="column" key={i} data-layout-margin>
-                      <RaisedButton
-                        label={events[key].name} primary
-                        onClick={this.selectEvent.bind(this, key) } />
-                    </div>
+                    <SelectEvent key={i} eventKey={key} eventName={events[key].name} selectEvent={this.selectEvent} />
                   );
                 })
               }
@@ -152,11 +165,12 @@ class Home extends Component {
             <span className="color-1">{this.state.selectedEvent.name}</span>
           </h3>
           <div data-layout-padding data-layout="row" data-layout-align="center center" data-layout-fill>
-            <RaisedButton label="ADD NEW" primary onClick={this.editMember } style={{ width: '100%' }} />
+            <RaisedButton label="ADD NEW" primary onClick={this.addMember} style={{ width: '100%' }} />
           </div>
           <Search
             members={this.props.members} attendances={this.props.attendances}
-            setAttendance={this.setAttendance} editMember={this.editMember} />
+            setAttendance={this.setAttendance} editMember={this.editMember}
+            onSearchInputChange={this.onSearchInputChange} />
         </div>
       );
     }

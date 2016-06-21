@@ -5,25 +5,27 @@ A sample website using React, Redux, Firebase and Material-UI
 
 ```JSON
 {
-    "rules": {      
+    "rules": {
       "events": {
         ".indexOn": ["isClosed"],
         "$eventUid": {
-          ".read": "root.child('eventAdmins').child(auth.uid).val() === $eventUid",      
+          ".read": "root.child('eventAdmins').child(auth.uid).val() === $eventUid",
+          ".write": "root.child('eventAdmins').child(auth.uid).val() === $eventUid",
           "attendances": {
             ".write": "root.child('eventAdmins').child(auth.uid).val() === $eventUid"
           }
         }
       },
-      "eventAdmins": {        
+      "eventAdmins": {
         "$adminUid": {
-          ".read": "$adminUid === auth.uid"
+          ".read": "$adminUid === auth.uid",
+          ".write": "$adminUid === auth.uid"
         }
       },
       "members": {
         ".read": "root.child('eventAdmins').child(auth.uid).exists()",
         ".write": "root.child('eventAdmins').child(auth.uid).exists()"
-      },     
+      },
       "testAuth": {
         ".read": "root.child('eventAdmins').child(auth.uid).exists()"
       },

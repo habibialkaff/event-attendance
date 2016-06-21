@@ -16,10 +16,12 @@ class Admin extends Component {
     this.saveEvent = this.saveEvent.bind(this);
     this.cancelSaveEvent = this.cancelSaveEvent.bind(this);
     this.toggleEvent = this.toggleEvent.bind(this);
+    this.onChangeEventName = this.onChangeEventName.bind(this);
 
 
     this.state = {
-      isEditEvent: false
+      isEditEvent: false,
+      eventName: ''
     };
   }
 
@@ -31,6 +33,12 @@ class Admin extends Component {
     this.props.detachLoadEvents();
   }
 
+  onChangeEventName(e) {
+    this.setState({
+      eventName: e.target.value
+    });
+  }
+
   editEvent() {
     this.setState({
       isEditEvent: true
@@ -40,7 +48,7 @@ class Admin extends Component {
   saveEvent(e) {
     e.preventDefault();
 
-    const name = this.refs.eventName.getValue();
+    const name = this.state.eventName;
 
     if (name) {
       const event = {
@@ -53,25 +61,21 @@ class Admin extends Component {
     }
 
     this.setState({
-      isEditEvent: false
+      isEditEvent: false,
+      eventName: ''
     });
-
-    this.refs.eventName.setValue('');
   }
 
   cancelSaveEvent(e) {
     e.preventDefault();
 
     this.setState({
-      isEditEvent: false
+      isEditEvent: false,
+      eventName: ''
     });
-
-    this.refs.eventName.setValue('');
   }
 
-  toggleEvent(key, e) {
-    e.preventDefault();
-
+  toggleEvent(key) {
     const event = this.props.events[key];
 
     event.isClosed = !event.isClosed;
@@ -84,7 +88,9 @@ class Admin extends Component {
     if (this.state.isEditEvent) {
       eventEdit = (<div data-layout="column" data-layout-align="center center">
         <div className="edit-event">
-          <TextField ref="eventName" hintText="Event Name" floatingLabelText="Event Name" />
+          <TextField
+            value={this.state.eventName} onChange={this.onChangeEventName}
+            hintText="Event Name" floatingLabelText="Event Name" />
 
           <div data-layout="row" data-layout-align="space-between center">
             <RaisedButton label="SAVE EVENT" primary onClick={this.saveEvent} />
@@ -112,7 +118,7 @@ class Admin extends Component {
                 const event = this.props.events[key];
                 if (!event.isClosed) {
                   const rightToggle = (
-                    <ToggleEvent eventKey={key} toggled={!event.isClosed} onToggle={this.toggleEvent} />
+                    <ToggleEvent eventKey={key} toggled={!event.isClosed} toggleEvent={this.toggleEvent} />
                   );
 
                   return (
@@ -142,7 +148,7 @@ class Admin extends Component {
                 const event = this.props.events[key];
                 if (event.isClosed) {
                   const rightToggle = (
-                    <ToggleEvent eventKey={key} toggled={!event.isClosed} onToggle={this.toggleEvent} />
+                    <ToggleEvent eventKey={key} toggled={!event.isClosed} toggleEvent={this.toggleEvent} />
                   );
 
                   return (

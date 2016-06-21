@@ -7,8 +7,6 @@ function diffPropValue(curr, next) {
 }
 
 export function isObjectChanged(curr, next) {
-  return !isNullOrUndefined(next) &&
-    (isNullOrUndefined(curr) || diffPropValue(curr, next));
+  return next !== curr ||
+    (!isNullOrUndefined(next) && (isNullOrUndefined(curr) || diffPropValue(curr, next)));
 }
-
-

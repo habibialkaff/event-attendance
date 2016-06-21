@@ -1,3 +1,4 @@
+import firebase from 'firebase';
 import {firebaseRef} from './constant';
 
 export const RELOADEVENTS_SUCCESS = 'RELOADEVENTS_SUCCESS';
@@ -15,36 +16,42 @@ function registerEventAdmin(eventId) {
 
   return new Promise((resolve) => {
     const email = `${getRandomInt(1, 1000)}@event.com`;
-    const password = `${getRandomInt(1, 100000)}`;
+    const password = `${getRandomInt(100000, 999999)}`;
 
-    firebaseRef.createUser({
-      email,
-      password
-    }, (error, authData) => {
-      const eventAdmin = {
-        [authData.uid]: eventId
-      };
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((authData) => {
+        const eventAdmin = {
+          [authData.uid]: eventId
+        };
 
-      eventAdminsRef.update(eventAdmin);
+        eventAdminsRef.update(eventAdmin).then((...params) => {
+          console.log(params);
+        }).catch((...params) => {
+          console.log(params);
+        });
 
-      resolve({
-        uid: authData.uid,
-        email,
-        password
+        resolve({
+          uid: authData.uid,
+          email,
+          password
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    });
   });
 }
 
 function removeEventAdmin(admin) {
   return new Promise((resolve) => {
-    firebaseRef.removeUser({
-      email: admin.email,
-      password: admin.password
-    }, () => {
-      eventAdminsRef.child(admin.uid).remove();
-      resolve();
-    });
+    resolve(admin);
+    // firebaseRef.removeUser({
+    //   email: admin.email,
+    //   password: admin.password
+    // }, () => {
+    //   eventAdminsRef.child(admin.uid).remove();
+    //   resolve();
+    // });
   });
 }
 
@@ -103,7 +110,7 @@ function update(event, uid) {
     if (!uid) {
       const childRef = eventsRef.push();
 
-      registerEventAdmin(childRef.key()).then((auth) => {
+      registerEventAdmin(childRef.key).then((auth) => {
         event.admin = auth;
 
         childRef.set(event, () => {
