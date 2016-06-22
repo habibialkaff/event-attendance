@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import {firebaseRef} from './constant';
+import {authStorage} from '../helpers/authStorage.js';
 
 const eventAdminsRef = firebaseRef.child('eventAdmins');
 
@@ -18,7 +19,7 @@ export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
 function validateAndStoreUser(authUser, cb) {
   firebaseRef.child('testAuth').once('value')
     .then(() => {
-      localStorage.setItem('authUser', JSON.stringify(authUser));
+      authStorage.save(authUser);
       cb(authUser, null);
     }, (error) => {
       cb(null, error);
@@ -27,7 +28,7 @@ function validateAndStoreUser(authUser, cb) {
 
 function logout() {
   firebase.auth().signOut();
-  localStorage.removeItem('authUser');
+  authStorage.remove();
 
   return (dispatch) => {
     dispatch({
@@ -68,7 +69,7 @@ function login(username, password) {
             eventUid: snapshot.val()
           };
 
-          localStorage.setItem('authUser', JSON.stringify(authUser));
+          authStorage.save(authUser);
 
           dispatch(loginSuccess(authUser));
         });
@@ -151,7 +152,7 @@ function checkAuth() {
 
     const callback = (authData) => {
       if (authData) {
-        let authUser = JSON.parse(localStorage.getItem('authUser'));
+        let authUser = authStorage.get();
 
         if (!authUser) {
           // Oauth redirect

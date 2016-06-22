@@ -1,4 +1,6 @@
-import {isNullOrUndefined} from './isNullOrUndefined';
+function isNullOrUndefined(obj) {
+  return obj === undefined || obj === null;
+}
 
 function diffPropValue(curr, next) {
   return Object.keys(curr).some((key) => {
