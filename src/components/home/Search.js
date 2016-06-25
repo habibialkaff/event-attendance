@@ -31,6 +31,21 @@ class Search extends React.Component {
     this.state = {
       filteredMembers: []
     };
+
+    this.searchText = '';
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.members !== nextProps.members) {
+      this.memberKeys = null;
+      this.updateSearchResult(this.searchText);
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.members !== nextProps.members ||
+      this.props.attendances !== nextProps.attendances ||
+      this.state.filteredMembers !== nextState.filteredMembers;
   }
 
   onSearchEnter(event) {
@@ -41,6 +56,7 @@ class Search extends React.Component {
 
   onChangeSearchText(e) {
     const inputValue = e.target.value;
+    this.searchText = inputValue;
 
     this.props.onSearchInputChange(inputValue);
     this.updateSearchResult(inputValue);
@@ -64,8 +80,10 @@ class Search extends React.Component {
 
         if (key.toLowerCase().indexOf(val) > -1) {
           const items = this.props.members[key];
-          arr.push(...items);
-          count += items.length;
+          if (items) {
+            arr.push(...items);
+            count += items.length;
+          }
         }
 
         return false;

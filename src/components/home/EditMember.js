@@ -30,6 +30,8 @@ class EditMember extends Component {
       nameInput: '',
       phoneInput: ''
     };
+
+    this.isDesktop = window.innerWidth > 600;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -93,16 +95,57 @@ class EditMember extends Component {
   }
 
   render() {
+    if (this.isDesktop) {
+      return (
+        <div>
+          <Dialog open={this.props.showEditMember} actions={this.standardActions} modal>
+            <TextField
+              value={this.state.nameInput || ''} onChange={this.onChangeName}
+              hintText="" floatingLabelText="Name" fullWidth />
+            <TextField
+              value={this.state.phoneInput || ''} onChange={this.onChangePhone} type="tel" hintText=""
+              floatingLabelText="Phone Number" fullWidth onKeyDown={this.onInputEnter} />
+          </Dialog>
+        </div>
+      );
+    }
+
+    const mobileContainer = {
+      position: 'fixed',
+      zIndex: 30,
+      backgroundColor: 'white',
+      top: '0px',
+      left: '0px',
+      width: '100%'
+    };
+
+    const mobileBackdrop = {
+      position: 'fixed',
+      height: '100%',
+      width: '100%',
+      top: '0px',
+      left: '0px',
+      zIndex: 20,
+      backgroundColor: 'rgba(0, 0, 0, 0.541176)',
+    };
+
     return (
-      <div>
-        <Dialog open={this.props.showEditMember} actions={this.standardActions} modal>
+      <div style={{ display: !this.props.showEditMember ? 'none' : '' }}>
+        <div style={mobileContainer} data-layout-padding>
           <TextField
             value={this.state.nameInput || ''} onChange={this.onChangeName}
             hintText="" floatingLabelText="Name" fullWidth />
           <TextField
             value={this.state.phoneInput || ''} onChange={this.onChangePhone} type="tel" hintText=""
             floatingLabelText="Phone Number" fullWidth onKeyDown={this.onInputEnter} />
-        </Dialog>
+          <div data-layout="row" data-layout-padding>
+            {this.standardActions.map((item, index) => {
+              return <div key={index}>{item}</div>;
+            }) }
+          </div>
+        </div>
+        <div style={mobileBackdrop}>
+        </div>
       </div>
     );
   }
