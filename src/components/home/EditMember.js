@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
@@ -130,23 +131,26 @@ class EditMember extends Component {
     };
 
     return (
-      <div style={{ display: !this.props.showEditMember ? 'none' : '' }}>
-        <div style={mobileContainer} data-layout-padding>
-          <TextField
-            value={this.state.nameInput || ''} onChange={this.onChangeName}
-            hintText="" floatingLabelText="Name" fullWidth />
-          <TextField
-            value={this.state.phoneInput || ''} onChange={this.onChangePhone} type="tel" hintText=""
-            floatingLabelText="Phone Number" fullWidth onKeyDown={this.onInputEnter} />
-          <div data-layout="row" data-layout-padding>
-            {this.standardActions.map((item, index) => {
-              return <div key={index}>{item}</div>;
-            }) }
+      <ReactCSSTransitionGroup
+        transitionName="edit-member" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+        {this.props.showEditMember && (<div>
+          <div style={mobileContainer} data-layout-padding>
+            <TextField
+              value={this.state.nameInput || ''} onChange={this.onChangeName}
+              hintText="" floatingLabelText="Name" fullWidth />
+            <TextField
+              value={this.state.phoneInput || ''} onChange={this.onChangePhone} type="tel" hintText=""
+              floatingLabelText="Phone Number" fullWidth onKeyDown={this.onInputEnter} />
+            <div data-layout="row" data-layout-padding>
+              {this.standardActions.map((item, index) => {
+                return <div key={index}>{item}</div>;
+              }) }
+            </div>
           </div>
-        </div>
-        <div style={mobileBackdrop}>
-        </div>
-      </div>
+          <div style={mobileBackdrop}>
+          </div>
+        </div>) }
+      </ReactCSSTransitionGroup>
     );
   }
 }

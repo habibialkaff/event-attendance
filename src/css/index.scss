@@ -27,7 +27,7 @@ html, body {
 }
 
 .txt-red {
-  color: #ff0000;    
+  color: #ff0000;
 }
 
 .color-1 {
@@ -61,4 +61,22 @@ html, body {
 .edit-event-input {
   display: flex;
   margin: auto;
+}
+
+.edit-member-enter {
+  opacity: 0.01;
+}
+
+.edit-member-enter.edit-member-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.edit-member-leave {
+  opacity: 1;
+}
+
+.edit-member-leave.edit-member-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
 }
