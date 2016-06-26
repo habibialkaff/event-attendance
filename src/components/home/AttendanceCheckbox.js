@@ -10,7 +10,9 @@ class AttendanceCheckbox extends Component {
     return (
       <div data-flex="20" data-layout="column" data-layout-align="center center">
         <div>
-          <Checkbox defaultChecked={this.props.isAttended} onCheck={this.props.setAttendance} />
+          <Checkbox
+            inputStyle={{ WebkitTapHighlightColor: 'rgba(0,0,0,0)' }}
+            defaultChecked={this.props.isAttended} onCheck={this.props.setAttendance} />
         </div>
       </div>
     );

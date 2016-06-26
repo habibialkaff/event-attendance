@@ -9,7 +9,7 @@ class AttendanceDetail extends Component {
   render() {
     return (
       <div data-flex="60" data-layout="column" data-layout-align="center start">
-        <div data-hide-sm data-layout="row" data-layout-fill>
+        <div data-hide-sm data-flex data-layout="row" data-layout-fill>
           <div data-flex="80" data-layout="column" data-layout-align="center start">
             {this.props.member && this.props.member.name.toUpperCase() }
           </div>
