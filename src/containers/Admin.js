@@ -193,8 +193,8 @@ function mapDispatchToProps(dispatch) {
     detachLoadEvents: () => {
       dispatch(detachLoadEvents());
     },
-    update: (event) => {
-      dispatch(update(event));
+    update: (event, key) => {
+      dispatch(update(event, key));
     }
   };
 }

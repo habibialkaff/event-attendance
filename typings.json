@@ -14,6 +14,7 @@
     "redux-thunk": "registry:dt/redux-thunk#2.0.1+20160317120654"
   },
   "dependencies": {
+    "firebase": "registry:npm/firebase#3.0.5+20160723033700",
     "history": "registry:npm/history#2.0.0+20160607172317",
     "react": "registry:npm/react#15.0.1+20160601175240",
     "react-redux": "registry:npm/react-redux#4.4.0+20160207114942",

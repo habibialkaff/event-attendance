@@ -1,6 +1,6 @@
-import firebase from 'firebase';
-import {firebaseRef} from './constant';
-import {authStorage} from '../helpers/authStorage.js';
+import * as firebase from 'firebase';
+import { firebaseRef } from './constant';
+import { authStorage } from '../helpers/authStorage.js';
 
 const eventAdminsRef = firebaseRef.child('eventAdmins');
 
@@ -176,4 +176,4 @@ function checkAuth() {
   };
 }
 
-export {ssoLogin, login, logout, checkAuth};
+export { ssoLogin, login, logout, checkAuth };

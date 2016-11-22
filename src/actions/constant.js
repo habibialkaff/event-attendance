@@ -8,4 +8,5 @@ const config = {
 };
 
 firebase.initializeApp(config);
+export const firebaseConfig = config;
 export const firebaseRef = firebase.database().ref();

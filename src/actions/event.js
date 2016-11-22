@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-import {firebaseRef} from './constant';
+import {firebaseRef, firebaseConfig} from './constant';
 
 export const RELOADEVENTS_SUCCESS = 'RELOADEVENTS_SUCCESS';
 export const LOADOPENEVENT_SUCCESS = 'LOADOPENEVENT_SUCCESS';
@@ -18,7 +18,9 @@ function registerEventAdmin(eventId) {
     const email = `${getRandomInt(1, 1000)}@event.com`;
     const password = `${getRandomInt(100000, 999999)}`;
 
-    firebase.auth().createUserWithEmailAndPassword(email, password)
+    const secondaryApp = firebase.initializeApp(firebaseConfig, 'Secondary');
+
+    secondaryApp.auth().createUserWithEmailAndPassword(email, password)
       .then((authData) => {
         const eventAdmin = {
           [authData.uid]: eventId
@@ -30,6 +32,9 @@ function registerEventAdmin(eventId) {
           console.log(params);
         });
 
+        secondaryApp.auth().signOut();
+        secondaryApp.delete();
+
         resolve({
           uid: authData.uid,
           email,
@@ -38,20 +43,29 @@ function registerEventAdmin(eventId) {
       })
       .catch((error) => {
         console.log(error);
+        secondaryApp.delete();
       });
   });
 }
 
 function removeEventAdmin(admin) {
   return new Promise((resolve) => {
-    resolve(admin);
-    // firebaseRef.removeUser({
-    //   email: admin.email,
-    //   password: admin.password
-    // }, () => {
-    //   eventAdminsRef.child(admin.uid).remove();
-    //   resolve();
-    // });
+    const secondaryApp = firebase.initializeApp(firebaseConfig, 'Secondary');
+
+    secondaryApp.auth().signInWithEmailAndPassword(admin.email, admin.password)
+      .then(() => {
+        const user = firebase.auth().currentUser;
+        const credential = firebase.auth.EmailAuthProvider.credential(admin.email, admin.password);
+
+        user.reauthenticate(credential).then(() => {
+          user.delete().then(() => {
+            eventAdminsRef.child(admin.uid).remove();
+            secondaryApp.auth().signOut();
+            secondaryApp.delete();
+            resolve();
+          });
+        });
+      });
   });
 }
 

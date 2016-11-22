@@ -159,10 +159,17 @@ class Home extends Component {
           </div>);
       }
     } else {
+      let attended = 0;
+      Object.keys(this.props.attendances).forEach((key) => {
+        if (this.props.attendances[key]) {
+          attended++;
+        }
+      });
+
       content = (
         <div>
           <h3 style={{ margin: 0 }}>
-            <span className="color-1">{this.state.selectedEvent.name}</span>
+            <span className="color-1">{`${this.state.selectedEvent.name} - ${attended}`}</span>
           </h3>
           <div data-layout-padding data-layout="row" data-layout-align="center center" data-layout-fill>
             <RaisedButton label="ADD NEW" primary onClick={this.addMember} style={{ width: '100%' }} />
