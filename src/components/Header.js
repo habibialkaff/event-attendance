@@ -1,5 +1,5 @@
-import React, {Component, PropTypes} from 'react';
-import {Link} from 'react-router';
+import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 
 class Header extends Component {
   render() {
@@ -7,6 +7,7 @@ class Header extends Component {
     let LoginLink;
     let LogoutLink;
     let AdminLink;
+    let PhoneAttendanceLink;
 
     if (this.props.isLoggedIn) {
       HomeLink =
@@ -24,6 +25,11 @@ class Header extends Component {
           (<div data-flex data-layout="column" data-layout-align="center center">
             <Link to="/admin">Admin</Link>
           </div>);
+
+        PhoneAttendanceLink =
+          (<div data-flex data-layout="column" data-layout-align="center center">
+            <Link to="/phones">Phones</Link>
+          </div>);
       }
     } else {
       LoginLink =
@@ -36,6 +42,7 @@ class Header extends Component {
       <div data-layout-fill data-layout="row">
         {HomeLink}
         {AdminLink}
+        {PhoneAttendanceLink}
         {LoginLink}
         {LogoutLink}
       </div>

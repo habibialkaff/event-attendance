@@ -1,5 +1,5 @@
-import {Component, PropTypes} from 'react';
-import {connect} from 'react-redux';
+import { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 class Authorized extends Component {
   componentWillMount() {
@@ -15,7 +15,7 @@ class Authorized extends Component {
 }
 
 Authorized.contextTypes = {
-  router: PropTypes.object.isRequired
+  router: PropTypes.object
 };
 
 Authorized.propTypes = {
@@ -24,7 +24,7 @@ Authorized.propTypes = {
 };
 
 function mapStateToProps(state) {
-  return {user: state.auth.user};
+  return { user: state.auth.user };
 }
 
 export default connect(mapStateToProps)(Authorized);

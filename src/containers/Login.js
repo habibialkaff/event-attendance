@@ -1,6 +1,6 @@
-import React, {Component, PropTypes} from 'react';
-import {connect} from 'react-redux';
-import {login, ssoLogin} from '../actions/auth';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { login, ssoLogin } from '../actions/auth';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 
@@ -61,8 +61,8 @@ class Login extends Component {
 }
 
 Login.contextTypes = {
-  router: PropTypes.object.isRequired,
-  store: PropTypes.object.isRequired
+  router: PropTypes.object,
+  store: PropTypes.object
 };
 
 Login.propTypes = {

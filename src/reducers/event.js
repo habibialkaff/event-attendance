@@ -1,8 +1,9 @@
 import {
-    RELOADEVENTS_SUCCESS,
-    LOADOPENEVENT_SUCCESS,
-    UPDATEEVENT_SUCCESS,
-    RELOADEVENTATTENDANCES_SUCCESS
+  RELOADEVENTS_SUCCESS,
+  LOADOPENEVENT_SUCCESS,
+  UPDATEEVENT_REQUEST,
+  UPDATEEVENT_SUCCESS,
+  RELOADEVENTATTENDANCES_SUCCESS
 } from '../actions/event';
 
 const initialState = {};
@@ -14,9 +15,15 @@ function event(state = initialState, action = {}) {
         ...state,
         events: action.events
       };
+    case UPDATEEVENT_REQUEST:
+      return {
+        ...state,
+        isUpdating: true
+      };
     case UPDATEEVENT_SUCCESS:
       return {
-        ...state
+        ...state,
+        isUpdating: false
       };
     case LOADOPENEVENT_SUCCESS:
       return {

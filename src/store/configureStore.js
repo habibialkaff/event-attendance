@@ -5,18 +5,19 @@ import createLogger from 'redux-logger';
 import auth from '../reducers/auth';
 import event from '../reducers/event';
 import member from '../reducers/member';
+import phoneList from '../reducers/phoneList';
 
 const logger = createLogger();
 const reducer = combineReducers(
   {
-    auth, event, member
+    auth, event, member, phoneList
   }
 );
 
 let middleware = [thunkMiddleware];
 
 if (process.env.NODE_ENV !== 'production') {
-  middleware = [...middleware, logger];
+  middleware = [...middleware];
 }
 
 const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore);

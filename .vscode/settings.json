@@ -7,15 +7,15 @@
     "typings": true
   },
   "eslint.enable": true,
+  "eslint.autoFixOnSave": true,
   "files.exclude": {
     "**/.git": true,
     "**/.DS_Store": true,
     "node_modules/**": false,
-    "bundle": true,
+    // "bundle": true,
     "etc": true,
     "npm-debug.log": true
   },
-  "javascript.validate.enable": false,
   "files.associations": {
     "*.js": "javascriptreact"
   }

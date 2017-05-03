@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 import { firebaseRef } from './constant';
-import { authStorage } from '../helpers/authStorage.js';
+import { authStorage } from '../helpers/authStorage';
 
 const eventAdminsRef = firebaseRef.child('eventAdmins');
 

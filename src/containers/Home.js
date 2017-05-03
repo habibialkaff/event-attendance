@@ -1,15 +1,15 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import { connect } from 'react-redux';
 
 import EditMember from '../components/home/EditMember';
 import Search from '../components/home/Search';
-import {SelectEvent} from '../components/home/SelectEvent';
+import { SelectEvent } from '../components/home/SelectEvent';
 
-import {connect} from 'react-redux';
-import {loadOpenEvents, updateAttendance, attachEventAttendance, detachEventAttendance} from '../actions/event';
-import {attachLoadMembers, detachLoadMembers, updateMember} from '../actions/member';
+import { loadOpenEvents, updateAttendance, attachEventAttendance, detachEventAttendance } from '../actions/event';
+import { attachLoadMembers, detachLoadMembers, updateMember } from '../actions/member';
 
 class Home extends Component {
   constructor(props) {

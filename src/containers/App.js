@@ -1,15 +1,15 @@
 import update from 'react-addons-update';
 import merge from 'lodash.merge';
 
-import React, {Component, PropTypes} from 'react';
-import {connect} from 'react-redux';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import LightRawTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import {blueGrey600} from 'material-ui/styles/colors';
+import { blueGrey600 } from 'material-ui/styles/colors';
 
 import Header from '../components/Header';
 
-import {checkAuth, logout} from '../actions/auth';
+import { checkAuth, logout } from '../actions/auth';
 
 class App extends Component {
   constructor(props) {
@@ -54,14 +54,22 @@ class App extends Component {
         <div className="content">
           {this.props.children}
         </div>
+        <div style={{ display: this.props.showLoadingSpinner ? '' : 'none' }}>
+          <div className="spinner-wrapper">
+            <div className="spinner">
+              <div className="double-bounce1" />
+              <div className="double-bounce2" />
+            </div>
+          </div>
+        </div>
       </div>
     ) : <div>Loading...</div>;
   }
 }
 
 App.contextTypes = {
-  router: PropTypes.object.isRequired,
-  store: PropTypes.object.isRequired
+  router: PropTypes.object,
+  store: PropTypes.object
 };
 
 App.childContextTypes = {
@@ -72,17 +80,19 @@ App.propTypes = {
   isAuthChecked: React.PropTypes.bool,
   isLoggedIn: React.PropTypes.bool,
   isSuperUser: React.PropTypes.bool,
+  showLoadingSpinner: React.PropTypes.bool,
   children: React.PropTypes.element,
   checkAuth: React.PropTypes.func,
-  logout: React.PropTypes.func
+  logout: React.PropTypes.func,
 };
 
 function mapStateProps(state) {
-  const {auth} = state;
+  const { auth, event } = state;
   return {
     isAuthChecked: auth.isAuthChecked,
     isLoggedIn: auth.user !== null && auth.user !== undefined,
-    isSuperUser: auth.user && auth.user.isSuperUser
+    isSuperUser: auth.user && auth.user.isSuperUser,
+    showLoadingSpinner: event.isUpdating
   };
 }
 

@@ -1,8 +1,9 @@
-import firebase from 'firebase';
-import {firebaseRef, firebaseConfig} from './constant';
+import * as firebase from 'firebase';
+import { firebaseRef, firebaseConfig } from './constant';
 
 export const RELOADEVENTS_SUCCESS = 'RELOADEVENTS_SUCCESS';
 export const LOADOPENEVENT_SUCCESS = 'LOADOPENEVENT_SUCCESS';
+export const UPDATEEVENT_REQUEST = 'UPDATEEVENT_REQUEST';
 export const UPDATEEVENT_SUCCESS = 'UPDATEEVENT_SUCCESS';
 export const RELOADEVENTATTENDANCES_SUCCESS = 'RELOADEVENTATTENDANCES_SUCCESS';
 
@@ -26,47 +27,50 @@ function registerEventAdmin(eventId) {
           [authData.uid]: eventId
         };
 
-        eventAdminsRef.update(eventAdmin).then((...params) => {
-          console.log(params);
-        }).catch((...params) => {
-          console.log(params);
-        });
-
-        secondaryApp.auth().signOut();
-        secondaryApp.delete();
-
         resolve({
           uid: authData.uid,
           email,
           password
         });
+
+        return eventAdminsRef.update(eventAdmin);
       })
       .catch((error) => {
         console.log(error);
+      })
+      .catch(() => Promise.resolve())
+      .then(() => {
+        secondaryApp.auth().signOut();
         secondaryApp.delete();
       });
   });
 }
 
 function removeEventAdmin(admin) {
-  return new Promise((resolve) => {
-    const secondaryApp = firebase.initializeApp(firebaseConfig, 'Secondary');
+  const secondaryApp = firebase.initializeApp(firebaseConfig, 'Secondary');
+  let user;
 
-    secondaryApp.auth().signInWithEmailAndPassword(admin.email, admin.password)
-      .then(() => {
-        const user = firebase.auth().currentUser;
-        const credential = firebase.auth.EmailAuthProvider.credential(admin.email, admin.password);
+  return secondaryApp.auth().signInWithEmailAndPassword(admin.email, admin.password)
+    .then(() => {
+      user = secondaryApp.auth().currentUser;
+      const credential = firebase.auth.EmailAuthProvider.credential(admin.email, admin.password);
 
-        user.reauthenticate(credential).then(() => {
-          user.delete().then(() => {
-            eventAdminsRef.child(admin.uid).remove();
-            secondaryApp.auth().signOut();
-            secondaryApp.delete();
-            resolve();
-          });
-        });
-      });
-  });
+      return user.reauthenticate(credential);
+    })
+    .then(() => {
+      return user.delete();
+    })
+    .then(() => {
+      return eventAdminsRef.child(admin.uid).remove();
+    })
+    .catch((error) => {
+      console.log(error);
+      return Promise.resolve();
+    })
+    .then(() => {
+      secondaryApp.auth().signOut();
+      secondaryApp.delete();
+    });
 }
 
 function attachLoadEvents() {
@@ -120,7 +124,10 @@ function loadOpenEvents(eventUid) {
 }
 
 function update(event, uid) {
-  return () => {
+  return (dispatch) => {
+    dispatch({
+      type: UPDATEEVENT_REQUEST
+    });
     if (!uid) {
       const childRef = eventsRef.push();
 
@@ -128,20 +135,29 @@ function update(event, uid) {
         event.admin = auth;
 
         childRef.set(event, () => {
-
+          dispatch({
+            type: UPDATEEVENT_SUCCESS
+          });
+        });
+      });
+    } else if (event.isClosed) {
+      removeEventAdmin(event.admin).then(() => {
+        event.admin = {};
+        eventsRef.child(uid).set(event, () => {
+          dispatch({
+            type: UPDATEEVENT_SUCCESS
+          });
         });
       });
     } else {
-      if (event.isClosed) {
-        removeEventAdmin(event.admin);
-        event.admin = {};
-        eventsRef.child(uid).set(event);
-      } else {
-        registerEventAdmin(uid).then((auth) => {
-          event.admin = auth;
-          eventsRef.child(uid).set(event);
+      registerEventAdmin(uid).then((auth) => {
+        event.admin = auth;
+        eventsRef.child(uid).set(event, () => {
+          dispatch({
+            type: UPDATEEVENT_SUCCESS
+          });
         });
-      }
+      });
     }
   };
 }
@@ -174,6 +190,8 @@ function updateAttendance(memberUid, eventUid, isAttended) {
   };
 }
 
-export {attachLoadEvents, detachLoadEvents, loadOpenEvents,
-update, updateAttendance, attachEventAttendance, detachEventAttendance};
+export {
+  attachLoadEvents, detachLoadEvents, loadOpenEvents,
+  update, updateAttendance, attachEventAttendance, detachEventAttendance
+};
 
