@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Toggle from 'material-ui/Toggle';
 
 export const ToggleEvent = (props) => {
@@ -12,7 +13,7 @@ export const ToggleEvent = (props) => {
 };
 
 ToggleEvent.propTypes = {
-  toggleEvent: React.PropTypes.func,
-  toggled: React.PropTypes.bool,
-  eventKey: React.PropTypes.string
+  toggleEvent: PropTypes.func,
+  toggled: PropTypes.bool,
+  eventKey: PropTypes.string
 };

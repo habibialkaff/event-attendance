@@ -1,10 +1,10 @@
-var path = require('path');
-var express = require('express');
-var webpack = require('webpack');
-var config = require('./webpack.config.dev');
+const path = require('path');
+const express = require('express');
+const webpack = require('webpack');
+const config = require('./webpack.config.dev');
 
-var app = express();
-var compiler = webpack(config);
+const app = express();
+const compiler = webpack(config);
 
 app.use(require('webpack-dev-middleware')(compiler, {
   stats: {
@@ -20,11 +20,11 @@ app.use(require('webpack-dev-middleware')(compiler, {
 
 app.use(require('webpack-hot-middleware')(compiler));
 
-app.get('*', function (req, res) {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(8080, 'localhost', function (err) {
+app.listen(8080, 'localhost', (err) => {
   if (err) {
     console.log(err);
     return;

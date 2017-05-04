@@ -7,7 +7,7 @@
     "max-len": [
       2,
       {
-        "code": 120,
+        "code": 200,
         "ignoreComments": true
       }
     ],
@@ -39,6 +39,7 @@
       {
         "allowForLoopAfterthoughts": true
       }
-    ]
+    ],
+    "react/forbid-prop-types": 0
   }
 }

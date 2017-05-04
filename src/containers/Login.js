@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { login, ssoLogin } from '../actions/auth';
 import TextField from 'material-ui/TextField';
@@ -73,7 +74,7 @@ Login.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const {auth} = state;
+  const { auth } = state;
   return {
     user: auth.user,
     loginError: auth.loginError

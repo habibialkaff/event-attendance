@@ -1,7 +1,8 @@
 import update from 'react-addons-update';
 import merge from 'lodash.merge';
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import LightRawTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
@@ -73,17 +74,17 @@ App.contextTypes = {
 };
 
 App.childContextTypes = {
-  muiTheme: React.PropTypes.object
+  muiTheme: PropTypes.object
 };
 
 App.propTypes = {
-  isAuthChecked: React.PropTypes.bool,
-  isLoggedIn: React.PropTypes.bool,
-  isSuperUser: React.PropTypes.bool,
-  showLoadingSpinner: React.PropTypes.bool,
-  children: React.PropTypes.element,
-  checkAuth: React.PropTypes.func,
-  logout: React.PropTypes.func,
+  isAuthChecked: PropTypes.bool,
+  isLoggedIn: PropTypes.bool,
+  isSuperUser: PropTypes.bool,
+  showLoadingSpinner: PropTypes.bool,
+  children: PropTypes.element,
+  checkAuth: PropTypes.func,
+  logout: PropTypes.func,
 };
 
 function mapStateProps(state) {

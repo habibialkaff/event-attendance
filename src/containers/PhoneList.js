@@ -1,5 +1,6 @@
-import React, { Component, PropTypes } from 'react';
-import { bindActionCreators } from 'redux'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -114,7 +115,7 @@ PhoneList.propTypes = {
 };
 
 function mapStateProps(state) {
-  const {phoneList} = state;
+  const { phoneList } = state;
   return {
     isInit: phoneList.phones === undefined,
     isLoading: phoneList.phones === null,

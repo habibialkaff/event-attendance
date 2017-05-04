@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
@@ -211,7 +212,7 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const {auth, event, member} = state;
+  const { auth, event, member } = state;
 
   return {
     eventUid: auth.user ? auth.user.eventUid : null,

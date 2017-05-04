@@ -1,12 +1,13 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {attachLoadEvents, detachLoadEvents, update} from '../actions/event';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { attachLoadEvents, detachLoadEvents, update } from '../actions/event';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import {List, ListItem} from 'material-ui/List';
+import { List, ListItem } from 'material-ui/List';
 
-import {ToggleEvent} from '../components/admin/ToggleEvent';
+import { ToggleEvent } from '../components/admin/ToggleEvent';
 
 class Admin extends Component {
   constructor(props) {
@@ -104,7 +105,7 @@ class Admin extends Component {
       </div>);
     }
 
-    let listItemStyle = {
+    const listItemStyle = {
       'fontSize': '1.5em'
     };
 
@@ -169,14 +170,14 @@ class Admin extends Component {
 }
 
 Admin.propTypes = {
-  events: React.PropTypes.object,
-  attachLoadEvents: React.PropTypes.func,
-  detachLoadEvents: React.PropTypes.func,
-  update: React.PropTypes.func
+  events: PropTypes.object,
+  attachLoadEvents: PropTypes.func,
+  detachLoadEvents: PropTypes.func,
+  update: PropTypes.func
 };
 
 function mapStateToProps(state) {
-  const { event} = state;
+  const { event } = state;
 
   const events = event.events || {};
 

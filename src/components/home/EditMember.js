@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
@@ -144,12 +145,11 @@ class EditMember extends Component {
             <div data-layout="row" data-layout-padding>
               {this.standardActions.map((item, index) => {
                 return <div key={index}>{item}</div>;
-              }) }
+              })}
             </div>
           </div>
-          <div style={mobileBackdrop}>
-          </div>
-        </div>) }
+          <div style={mobileBackdrop} />
+        </div>)}
       </ReactCSSTransitionGroup>
     );
   }

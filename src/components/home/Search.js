@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import Attendance from './Attendance';
 import keycode from 'keycode';
@@ -120,11 +121,11 @@ class Search extends React.Component {
 }
 
 Search.propTypes = {
-  members: React.PropTypes.object,
-  attendances: React.PropTypes.object,
-  setAttendance: React.PropTypes.func,
-  editMember: React.PropTypes.func,
-  onSearchInputChange: React.PropTypes.func
+  members: PropTypes.object,
+  attendances: PropTypes.object,
+  setAttendance: PropTypes.func,
+  editMember: PropTypes.func,
+  onSearchInputChange: PropTypes.func
 };
 
 export default Search;

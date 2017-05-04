@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import RaisedButton from 'material-ui/RaisedButton';
 
 export const SelectEvent = (props) => {
@@ -14,7 +15,7 @@ export const SelectEvent = (props) => {
 };
 
 SelectEvent.propTypes = {
-  eventKey: React.PropTypes.string,
-  eventName: React.PropTypes.string,
-  selectEvent: React.PropTypes.func
+  eventKey: PropTypes.string,
+  eventName: PropTypes.string,
+  selectEvent: PropTypes.func
 };

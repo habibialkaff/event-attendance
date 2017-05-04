@@ -1,8 +1,9 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import AttendanceEditButton from './AttendanceEditButton';
 import AttendanceCheckbox from './AttendanceCheckbox';
 import AttendanceDetail from './AttendanceDetail';
-import {isObjectChanged} from '../../helpers/isObjectChanged';
+import { isObjectChanged } from '../../helpers/isObjectChanged';
 
 class Attendance extends Component {
   constructor(props) {

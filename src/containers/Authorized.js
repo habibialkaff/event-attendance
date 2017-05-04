@@ -1,9 +1,10 @@
-import { Component, PropTypes } from 'react';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 class Authorized extends Component {
   componentWillMount() {
-    const {user} = this.props;
+    const { user } = this.props;
     if (!user) {
       this.context.router.replace('/login');
     }
