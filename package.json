@@ -9,7 +9,7 @@
     "build": "npm run clean && npm run build:webpack",
     "firebase-deploy": "npm run build && firebase deploy",
     "start": "node devServer.js",
-    "linting": "eslint --fix \"src\""
+    "linting": "eslint \"src\""
   },
   "author": "",
   "license": "ISC",

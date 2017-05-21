@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { attachLoadEvents, detachLoadEvents, update } from '../actions/event';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { List, ListItem } from 'material-ui/List';
 
+import { attachLoadEvents, detachLoadEvents, update } from '../actions/event';
 import { ToggleEvent } from '../components/admin/ToggleEvent';
 
 class Admin extends Component {
@@ -115,7 +115,7 @@ class Admin extends Component {
         <div>
           <List>
             {
-              Object.keys(this.props.events).map((key, i) => {
+              Object.keys(this.props.events).map((key) => {
                 const event = this.props.events[key];
                 if (!event.isClosed) {
                   const rightToggle = (
@@ -124,7 +124,7 @@ class Admin extends Component {
 
                   return (
                     <ListItem
-                      key={i}
+                      key={key}
                       primaryText={<div style={listItemStyle}>{event.name}</div>}
                       rightToggle={rightToggle}
                       secondaryText={
@@ -145,7 +145,7 @@ class Admin extends Component {
               })
             }
             {
-              Object.keys(this.props.events).map((key, i) => {
+              Object.keys(this.props.events).map((key) => {
                 const event = this.props.events[key];
                 if (event.isClosed) {
                   const rightToggle = (
@@ -154,7 +154,7 @@ class Admin extends Component {
 
                   return (
                     <ListItem
-                      key={i} primaryText={<div style={listItemStyle}>{event.name}</div>}
+                      key={key} primaryText={<div style={listItemStyle}>{event.name}</div>}
                       rightToggle={rightToggle} />
                   );
                 }

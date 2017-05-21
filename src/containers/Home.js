@@ -163,7 +163,7 @@ class Home extends Component {
       let attended = 0;
       Object.keys(this.props.attendances).forEach((key) => {
         if (this.props.attendances[key]) {
-          attended++;
+          attended += 1;
         }
       });
 

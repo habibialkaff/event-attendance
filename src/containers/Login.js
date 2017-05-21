@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { login, ssoLogin } from '../actions/auth';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import { login, ssoLogin } from '../actions/auth';
 
 class Login extends Component {
   constructor(props) {

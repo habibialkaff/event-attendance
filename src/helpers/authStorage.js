@@ -14,4 +14,4 @@ const authStorage = {
   get, save, remove
 };
 
-export {authStorage};
+export { authStorage };

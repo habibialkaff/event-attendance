@@ -23,8 +23,8 @@ export default {
         path: path.join(__dirname, 'node_modules')
       }
     ], {
-        manifest: 'app-entry'
-      }),
+      manifest: 'app-entry'
+    }),
     new WebpackMd5Hash(),
 
     new webpack.optimize.UglifyJsPlugin({
